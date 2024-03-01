@@ -1,0 +1,947 @@
+﻿/*Буква S впереди селекторов указывает, что данные стили применяются только на сайта без админки, 
+а в work.css для всех обоих типов*/
+body {
+    background: white;
+}
+/*Переменные*/
+.bod, body {
+    opacity: 0;
+}
+
+:root {
+    --cl-orange: #F29015;
+    --cl-blue: #2196F3;
+    --f7-font-size: 11.5px !important;
+    --font-size-Div: 12.5px !important;
+    --f7-list-item-title-font-size: 11.5px !important;
+    --f7-list-item-header-font-size: 11.5px !important;
+    --f7-list-font-size: 11.5px !important;
+    --f7-menu-bg-color: black;
+    --f7-menu-item-pressed-bg-color: black;
+    --f7-menu-dropdown-pressed-bg-color: black;
+    --f7-menu-text-color: #fff !important;
+    --f7-menu-font-weight: 400;
+    --f7-panel-width: 350px;
+    --f7-navbar-link-color: white !important;
+    --f7-dialog-input-bg-color: rgba(0, 0, 0, 1) !important;
+    --f7-dialog-input-bg-color: rgba(0, 0, 0, 1) !important;
+    --f7-navbar-bg-color: #5B5B5B;
+}
+   /*Заголовок*/
+   .zagol-bold {
+    font-size: 1.2em;
+    font-weight: 700;
+    padding: 0  !important;
+}
+.telephon {
+    border-top: 1.3px solid #B2B2B2;
+    margin: 0 20px;
+    padding: 5px 0;
+    font-size: 1.1em;
+    font-weight: 500;
+ }
+ .cianTel {
+    color: #3C92AC;
+    font-size: 1em;
+    font-weight: 400;
+    text-align: left;
+    margin-left: 2px  !important;
+    margin: 5px 0  !important;
+}
+ .imgTel {
+    height: 31px  !important;
+    width: 31px  !important;
+    margin: 0;
+    padding: 0;
+}
+.dialog-backdrop {
+background: rgba(0,0,0,0);
+}
+/*убираем тонкую черту под ul*/
+ul:after {
+    display: none !important;
+}
+/*Кнопка запроса цен*/
+.butZapros {
+    background: red;
+    color: white;
+    position: absolute;
+    right: 58%;
+    bottom: 10%;
+    border-radius: 8px;
+    border: 1.5px solid white;
+    box-shadow: 0 0 5px 2px grey;
+    padding: 5px 14px;
+    font-size: 14px;
+    z-index: 1000;
+}
+    .butZapros:hover {
+        border: 1.5px solid black;
+        box-shadow: inset 0 0 0 2px white, 0 0 5px 2px grey;
+    }
+
+
+    /*все что относится к меню menu*/
+    .popoverMenu {
+    border: 1px solid black;
+    border-radius: 0;
+    background: white;
+    display: none;
+  }
+
+
+.dropR {
+    display: block !important;
+}
+
+.fonBlack {
+    background: black !important;
+    }
+.enter:active, .enter:hover, .enter2:active, .enter2:hover {
+    background: black;
+}
+.enter:hover .popoverMenu, .enter2:hover .popoverMenu {
+    display: block;
+}
+.navRed .navbar-inner {
+    padding-right: 0px !important;
+    }
+.enter, .enter2 {
+    margin: 0 !important;
+}
+.popover-menu, .enter {
+    width: 170px !important;
+    }
+.popover-menu .menu-main .menu-list {
+    width: 160px !important;
+    min-width: 160px !important;
+}
+.menu-item-content {
+    padding: 5px !important;
+}
+.menu-inner .wMenu  {
+    width: 120px !important;
+}
+
+.wMenu .menu-item-content {
+    width: 120px !important;
+}
+.popover-menu2, .enter2, .wMenu  {
+    width: 120px !important;
+}
+    .popover-menu2 .menu-main .menu-list {
+        width: 110px !important;
+        min-width: 110px !important;
+    }
+        .menu-item, .menu-inner {
+    border-radius: 0;
+    height: 35px !important;
+    margin: 0 !important;
+    color: white;
+    background: none;
+}
+
+.right-menu {
+    height: 35px !important;
+    padding: 0 !important;
+    margin-right: -12px !important;
+}
+
+.menu-main {
+ margin: 0 !important;
+}
+ .popoverMenu .menu-main .menu-list {
+    color: black;
+    padding: 5px !important;
+    margin: 0 !important;
+ }
+   .popoverMenu .menu-main .menu-list:hover {
+          background: #D9DADA;
+        }
+.greyMenu {
+    color: #9D9E9E !important;
+}
+
+.greyMenu:hover {
+    background: none !important;
+}
+
+.divider, .divider-menu {
+    color: white !important;
+    background: #808080 !important;
+    height: 25px !important;
+    margin-top: 5px !important;
+    margin-bottom: 0;
+}
+/*Фон для общего поля*/
+.MainRow {
+    background: linear-gradient(0, white, #EBECEC, black);
+    padding: 0 !important;
+    padding-top: 50px !important;
+    margin: 0 !important;
+    }
+
+
+.divider-menu {
+    width: 100% !important;
+    border-radius: 0 !important;
+}
+
+/*полоска над и под заголовкомl*/
+.line_grad {
+    height: 3px;
+    background: #ffffff;
+    background: -moz-linear-gradient(left, #ffffff 0%, #c5c6c6 50%, #ffffff 100%);
+    background: -webkit-linear-gradient(left, #ffffff 0%,#c5c6c6 50%,#ffffff 100%);
+    background: linear-gradient(to right, #ffffff 0%,#c5c6c6 50%,#ffffff 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff',GradientType=1 );
+    margin: 2px 0 !important;
+    }
+/*Заголовок над фирмами, подрубрика*/
+.titleMain {
+    font-size: 15px;
+    line-height: 1.2;
+    color: var(--cl-blue) !important;
+    font-weight: 500;
+    text-align: center;
+    margin: 0 !important;
+    padding: 0 !important;
+    margin: 5px 0 !important;
+    }
+
+
+/*убираем полоску сверху ul*/
+.list ul:before {
+    display: none !important;
+}
+/*вид полосы прокрутки*/
+.S_Ftab::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    background-color: #C1C1C1;
+    opacity: 0.9 !important;
+}
+/*ширина полосы прокрутки*/
+.S_Ftab::-webkit-scrollbar {
+    width: 6px;
+}
+/*трек прокрутки*/
+.S_Ftab::-webkit-scrollbar-track {
+    background-color: #F1F1F1;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+.S_Ftab::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+    background-color: #C1C1C1;
+}
+    .S_Ftab::-webkit-scrollbar-thumb:hover {
+        -webkit-border-radius: 0px;
+        border-radius: 0px;
+        background-color: #787878;
+    }
+/*Поле для колонок*/
+.S_blockSait, .page-content {
+    margin: 0 !important;
+    padding: 0 !important;
+    }
+/*Колонки для сайта*/
+.S_upTitul, .S_map, .S_upTitul_Div {
+    position:relative;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    background: white;
+    height: 93vh !important;
+    padding-top: 0px !important;
+}
+    .S_upTitul {
+        padding-top: 10px !important;
+    }
+    .S_upTitul_Div {
+        margin-top: -3px !important;
+        height: 73vh !important;
+    }
+    /*Колонки для карты*/
+    .S_map {
+        width: 50% !important;
+    }
+    .S_Ftab {
+        padding: 5px 5px;
+        padding-right: 15px;
+        padding-top: 3px !important;
+        margin: 0 !important;
+        font-size: 1em !important;
+        overflow: auto;
+        height: calc(100% - 60px) !important;
+        }
+    
+firms  {
+    padding-bottom: 400px !important;
+}
+    .S_upTitul_Div .S_Ftab {
+        height: calc(100% - 30px) !important;
+    }
+/*Колонки для списка*/
+.S_lineAllGr {
+    color: black;
+    background: white;
+    font-weight: 700;
+}
+/*листинг для подрубрик при открытие аккордеона*/
+.S_boxSub {
+padding: 5px;
+padding-left: 10px;
+background: white;
+}
+
+/*Блок для информации и акции, статьи*/
+.S_blockInfa {
+    padding: 5px;
+    margin-left: 5px !important;
+    }
+/*Шрифты для всех значений*/
+.S_lineFill, .S_lineSub, .S_lineAllFill, .S_lineFirm {
+    background: white;
+    }
+.orange, .blueSub:hover {
+    color: var(--cl-orange) !important;
+}
+/*подразделы в фирмах*/
+.blueSub, .blueText {
+    color: var(--cl-blue);
+}
+.blueColor {
+    color: var(--cl-blue);
+}
+.S_lineBaner .badge, .S_lineBaner .item-media, .S_lineBaner .f7-item {
+    flex-grow: 1 !important;
+    }
+
+/*Если есть банер увеличиваем высоту list-item и поднимаем банер вверх*/
+.S_lineBaner, .S_lineBaner .item-title {
+    line-height: 1.2vw !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+.titleBan {
+    flex-grow: 1 !important;
+    }
+.S_lineFoot, .S_lineFootMain {
+    width: 97% !important;
+    /*padding: 5px;*/
+    margin: 0 auto !important;
+    cursor: pointer;
+}
+.S_lineFootMain {
+    top: 0 !important;
+}
+
+/*Банер на главной*/
+.S_lineFillMain .item-inner .item-title {
+    width: 100% !important;
+    }
+    /*Подстройка рубрик и подрубрик под сайт, в админке другие параметры*/
+.S_lineFill .item-title, .S_lineSub .item-title {
+    margin-top: -7px !important;
+    font-size: var(--font-size-Div) !important;
+}
+
+.S_lineAll .item-title {
+    font-size: var(--font-size-Div) !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+.S_lineSub, .S_lineSub .item-title {
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    }
+
+.S_lineAll, .S_lineDiv {
+    font-weight: 500 !important;
+    background: white;
+    color: black;
+    font-size: var(--font-size-Div) !important;
+}
+/*Рубрики в поисковой */
+    .S_lineDiv {
+        height: 25px !important;
+        line-height: 25px !important;
+    }
+
+    .S_lineFill:hover, .S_lineSub:hover, .S_lineFill, .S_lineAll:hover {
+        color: var(--cl-orange) !important;
+    }
+
+.S_lineFill, .S_lineSub, .S_lineSub2 {
+    margin: 0 !important;
+    margin-bottom: 2px !important;
+    padding: 0 !important;
+    padding-left: 12px !important;
+    color: black;
+    background: white !important;
+    width: 100%;
+    line-height: 24px !important;
+    min-height: 24px !important;
+    height: 24px !important;
+}
+.S_lineSub {
+    width: 95%;
+}
+.S_lineSub2 {
+    width: 100%;
+    padding-left: 0px !important;
+    margin-left: -10px !important;  
+}
+.S_lineFill {
+    padding-left: 0 !important;
+    margin-left: -14px !important;
+    color: black !important;
+  }
+
+/*Для кнопок приоритета*/
+    .pinpush {
+        margin-left: 0 !important;
+        margin-right: 3px !important;
+        padding-right: 0 !important;
+    }
+    /*линия для фирмы*/
+    .S_lineFirmGr, .S_lineFirm, .S_lineFirmGr .item-title, .S_lineFirm .item-title, .S_lineFirm .item-after, .S_lineFirmGr .item-after,
+    .S_lineFirmGr .item-inner, .S_lineFirm .item-inner, .S_lineFirmGr .item-content, .S_lineFirm .item-content {
+        min-height: 17px !important;
+        line-height: 17px !important;
+    }
+        .blackDiv {
+            color: black;
+        }
+        .S_lineFirm .item-after, .S_lineFirmGr .item-after {
+            min-height: 17px !important;
+            line-height: 17px !important;
+         }
+    /*Полоска с фирмой*/
+.S_lineFirm {
+    background: white !important;
+  }
+.S_lineFirmGr {
+    background: #EAEAEA !important;
+    }
+    .S_lineFirm:hover, .S_lineFirmGr:hover {
+        background: #d9d9d9 !important;
+        /*color: var(--cl-orange) !important;*/
+    }
+/*Открытыя фирма*/
+.S_lineFirmOpen {
+    border: 3px double black;
+    background: white !important;
+        z-index: 10000;
+    box-shadow:0 0 5px 0px darkgrey;
+    transform: scale(1.02, 1.01);
+ }
+.S_lineFirmOpen:hover {
+    border: 3px double black;
+    box-shadow:0 0 5px 0px darkgrey;
+    transform: scale(1.03, 1.02);
+    
+    background: white !important;
+}
+
+
+    .S_title_firma, .S_lineFirmOpen .S_title_firma, .S_title_firma .list .item-title {
+        font-size: 12.5px !important;
+        font-weight: 500 !important;
+    }
+        .openFirm .S_title_firma, .S_lineFirmOpen .S_title_firma  {
+            font-size: 14.5px !important;
+            font-weight: 500 !important;
+        }
+
+    .imgIcon, .imgIcon2, .imgIcon3, .imgIcon4, .iconCheck {
+        margin: 0;
+        padding: 0;
+        padding-left: 3px;
+    }
+.imgIcon {
+    height: 10px !important;
+    width: 10px !important;
+    margin-right: 5px;
+}
+.imgIcon3 {
+    height: 16px !important;
+    width: 16px !important;
+    padding-left: 0px;
+    padding-top: 2px !important;
+}
+.imgIcon5 { 
+    height: 12px;
+    line-height: 30px;
+}
+.imgIcon2 {
+    height: 8px !important;
+    width: 8px !important;
+    margin-top: 4px !important;
+    margin-right: 3px;
+}
+.imgIcon4 {
+    height: 12px !important;
+    width: 12px !important;
+    padding-left: 0px;
+    padding-top: 2px !important;
+    margin-right: -20px !important;
+}
+
+.iconCheck {
+    color: var(--cl-blue);
+    padding-bottom: 5px !important;
+    padding-left: 0px;
+    margin-right: 4px !important;
+    font-size: 1.5em !important;
+}
+/*Полоска с информацией*/
+.info {
+    color: #007239;
+    background: #F9F9F9;
+    padding: 5px;
+    padding-left: 15px;
+    margin: 0 7px;
+    height: auto !important;
+    line-height: 16px;
+    font-weight: 600;
+    font-size: 12px !important;
+    font-size: 1em !important;
+
+}
+
+.S_lineTel {
+    height: 34px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    padding-left: 8px !important;
+    }
+    .S_lineTel .item-content, .S_lineTel .item-inner, .S_lineTel .item-media {
+        height: 34px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+         }
+    .S_lineTel .item-content, .S_Tel .item-content {
+        padding-left: 0 !important;
+         }
+
+ .no-border {
+            border: none !important;
+        }
+.border {
+    border-bottom: 1px solid #909090;
+    width: 92% !important;
+    margin-left: 8px !important;
+   }
+
+.S_lineSubVid {
+    height: 22px !important;
+    padding-left: 5px;
+    font-size: 0.8em !important;
+ }
+    .S_lineSubVid .item-content {
+        height: 22px !important;
+     }
+    
+    .S_lineSubVid .item-media {
+        margin: 0 !important;
+        padding: 0 !important;
+        margin-right: -32px !important;
+        color: var(--cl-orange);
+     }
+    .S_lineSubVid .f7-icons {
+        font-size: 16px !important;
+    }
+    .S_lineSubVid:hover {
+        color: black !important;
+    }
+    .firma.card-footer {
+        min-height: 20px !important;
+    }
+.deyt {
+    padding: 3px 0 !important;
+}
+/*Кнопки в фирме*/
+.button {
+    padding: 0;
+    height: 24px;
+    line-height: 24px;
+    font-stretch: condensed;
+    font-size: 0.75vw !important;
+}
+.button:hover {
+        background: #2196F3;
+        color: white;
+    }
+/*титульный надпись*/
+.TitulHeader {
+    width: 100% !important;
+    min-width: 100% !important;
+    margin: 0 !important;
+    font-size: 0.75em;
+    padding: 0 !important;
+    }
+.S_100wd {
+    width: 100%;
+    padding: 0;
+    margin: 1px !important;
+}
+.padBot{
+    margin-bottom: 5px !important;
+    color: black !important;
+}
+
+.blue {
+    color: black;
+    margin: 0 10px !important;
+}
+
+.S_lineTel .blue {
+    color: #2196F3;
+    margin-left: -10px !important;
+    font-size: 12.5px !important;
+}
+
+.bgWhite, .page-content {
+    background: white;
+}
+.leftPad8 {
+    padding-left: 8px !important;
+    margin-top: 6px;
+}
+.size07 {
+    font-size: 0.85em !important;
+}
+.manBan {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 7px;
+}
+/*Настройки карты на сайте*/
+#mapSait {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.S_red, .S_red .item-content {
+    color: red !important;
+}
+.padcont {
+    padding: 0 4px !important;
+}
+
+.LineBut {
+    margin: 5px 3px !important;
+    width: 100% !important;
+}
+/*полоска с акцией*/
+.lineAct {
+    padding: 5px 0;
+    color: red;
+    font-size: 12px;
+    text-align: center;
+    width: 100%;
+    }
+    .imgIconPushText {
+        padding-top: 4px;
+        height: 16px  !important;
+    }
+    .row-text {
+        margin-bottom: 8px;
+    }
+.imgOp {
+    /*min-height: 36px !important;*/
+    padding: 0 5px !important;
+    width: 100% !important;
+}
+.sign2 {height: 23px;}
+.adres {
+    font-size: 13px !important;
+    }
+.iconAft, .iconAft3, .iconAft4, .iconAft5 {
+    height: 11px !important;
+    margin-left: 3px !important;
+}
+.iconAft3 {
+    height: 14px !important;
+    }
+.iconAft2 {
+    height: 11px !important;
+    padding-top: 2px !important;
+}
+.iconAft4 {
+        margin-top: 4px !important;
+}
+.iconAft5 {
+    margin-bottom: -2px !important;
+}
+
+.StarBut, .StarFillBut {
+    color: red !important;
+      width: 30% !important;
+    height: 25px !important;
+    background-repeat: no-repeat;
+    margin-bottom: 10px !important;
+    margin: 5px 10px !important;
+}
+
+.minMar5 {
+    margin-left: -5px !important;
+    margin-right: 3px !important;
+    }
+But {
+    background-image: url('../images/res/star.svg');
+}
+.StarFillBut {
+    background-image: url('../images/res/starGrey.svg');
+}
+.fonRed {
+    background: red !important;
+  }
+  .w-100 {
+    width: 100%;
+}
+  .w-90 {
+      width: 90%;
+  }
+  .w-80 {
+    width: 80%;
+}
+
+.afterNum {
+    margin-bottom: 10px;
+}
+
+.imgLogo {
+    height: 30px !important;
+    padding-left: 0px !important;
+    margin-left: 0px !important;
+    margin-top: 6px !important;
+    overflow: hidden;
+}
+.popup-our {
+    top: 355px !important;
+    width: 45% !important;
+    height: 95% !important;
+    overflow: auto !important;
+}
+.autoSpan {
+    height: auto !important;
+}
+.grey {
+    background: #EBECEC;
+}
+.imgLink {
+    height: 2.6vw;
+}
+
+.navblack {
+    background: black;
+    color: white;
+}
+/*Показывает ссылки для скачиваний приложений*/
+.zombi {
+    display: none;
+}
+.greyCol {
+    color: grey;
+}
+
+
+.banerShow {
+    height: 12.6vw;
+    width: 100%;
+    background: url(/images/banerMain.jpg) 100% 100% no-repeat; 
+    background-size: contain;
+    
+}
+.banerShow:hover {
+    background: url(/images/banerMain2.jpg) 100% 100% no-repeat; 
+    background-size: contain;
+    }
+
+
+
+.popover-link {
+    width: 17.75vw !important;
+    height: 4.8vw !important;
+    padding-bottom: 1.4vw !important;
+    padding-left: 1.3vw !important;
+    left: 1.38vw !important;
+    top: 44px !important;
+    margin-top: 3.1vw !important;
+    position: absolute;
+    background: white !important;
+}
+
+ .navRed2, .navRed2 .navbar-inner {
+    background: red !important;
+    color: white;
+    font-weight: 700;
+}
+.padTop40 {
+   padding-top: 40px;
+}
+
+.navRed .navbar-inner, .navRed .sliding, .navRed .navbar {
+    background: red !important;
+    height: 35px !important;
+    width: 100% !important;
+}
+.navRed {
+    height: 39px !important;
+    box-shadow: 0 4px 4px rgba(0,0,0,0.3) !important;
+    border-bottom: 4px solid yellow !important;
+}
+    .navRed .sliding > *, .right .menu, .right .menu-inner, .right .menu-item {
+        height: 35px !important;
+     }
+    .right .menu-item:hover {
+        background: black;
+    }
+.sliding .left {
+    width: 25% !important;
+    margin-left: 0 !important;
+    margin-top: 2px !important;
+}
+     .sliding .title {
+        width: 15% !important;
+       }
+.sliding .right {
+    width: 60% !important;
+}
+    .padTop {
+    margin-bottom: 12px !important;
+}
+.toolbarBut {
+    position: absolute;
+    bottom: 16px;
+    right: 0px;
+    width: 100%;
+    height: 30px;
+     z-index: 1000;
+     background:white !important;
+}
+.toolbarBut .row.no-gap {
+    --f7-grid-gap: 10px !important;
+    }
+.toolButton {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;  
+    display: block;
+    background: red;
+    height: 30px;
+    line-height: 30px;
+    width: 100%;
+    color: white;
+    font-size: 1.1em;
+    font-weight: 600;
+    box-shadow: 1px 1px 4px #727271;
+}
+.toolButtonHover:hover {
+    border: solid 1px #D9DADA;
+box-shadow: 2px 2px 5px #727271;
+    line-height: 28px;
+        }
+
+/*увеличиваем шрифт названия фирмы при открытие карточки предприятия*/
+.fontPlus {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+.S_ban .item-title {
+    width: 100% !important;
+}
+.S_ban .item-after, .S_ban .item-befor, .S_ban .item-inner:before {
+    width: 0 !important;
+}
+
+/*тень вокруг главных банеров*/
+.shadowBan {
+      width: 99.8% !important;
+      }
+/*Сам главный банер*/
+.white {
+margin-top: 4px;
+    background: none !important;
+        }
+        
+.black {
+    color: #9D9E9E !important;
+}
+
+    /*div form search*/
+    .MainSearch {
+    background: none;
+}
+/*search*/
+        .MainSearch input[type="search"] { 
+            height: 27px !important;
+            border-radius: 5px !important;
+            border: 1px solid white !important;
+            width: 100% !important;
+            margin-top: 4px !important;
+            font-size: 13px !important;
+            font-weight: 400 !important;
+         }
+            .MainSearch input[type="search"] .input-focused {
+                font-size: 26px !important;
+            }
+            .MainSearch input[type="search"]::placeholder {
+                font-size: 16px !important;
+             }
+            /*кнопка отмены поиска*/
+        .MainSearch .searchbar-disable-button, .MainSearch .input-clear-button {
+            padding-top: 3px !important;
+          }
+        
+        .MainSearch .searchbar-input-wrap, .MainSearch .searchbar-inner {
+            height: 27px !important;
+        }
+        .MainSearch .searchbar-icon {
+            margin-top: -3px !important;
+        }
+.searchbar-disable-button {
+    display: none !important;
+}
+/*список для search*/
+.spisok {
+    display: none;
+    border: 1px solid black;
+    background: white;
+    position: absolute;
+    top: 38px;
+    left: 21.5vw;
+    color: black;
+    width: 24vw;
+    z-index: 99999;
+    overflow: auto;
+    max-height: calc(100% - 90px) !important;
+    padding-bottom: 15px;
+}
+
+/*отступ в правой панели сверху*/
+.topPanel {
+    padding-top: 35px !important;
+}
+/*Раздел о нас*/
+/*Заголовок*/
+.zagol-bold {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 0 !important;
+}
+/*li без маркера*/
+.no-decor {
+    list-style: none;
+    margin-left: -20px;
+}
+.infoimg {
+    padding-left: 10px !important;
+   }

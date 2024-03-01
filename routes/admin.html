@@ -1,0 +1,1465 @@
+﻿<!DOCTYPE html>
+<html lang="ru" class="wide wow-animation">
+
+<head>
+    <!-- Site Title-->
+    <title>Админка Автосправка</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- Color theme for statusbar -->
+    <meta name="theme-color" content="red">
+    <!-- Stylesheets-->
+    <link href="css/framework7.bundle.min.css" rel="stylesheet" />
+    <link href="css/framework7-icons.css" rel="stylesheet" />
+    <link href="css/work.css" rel="stylesheet" />
+</head>
+
+<body>
+    <!-- App Root Element -->
+    <div id="app" v-on:page:init="PageInit()">
+        <!-- Main Framework7 App component where we pass Framework7 params -->
+        <f7-app :params="$root.f7params">
+            <!-- Left Panel with Reveal effect -->
+            <f7-panel left>
+                <f7-view class="bod">
+                    <f7-page>
+                        <f7-navbar title="Меню" back-link="Back" class="panel-close AddGrey">
+                            <f7-nav-right>
+                                <f7-link icon="icon-bars" panel-open="right"></f7-link>
+                            </f7-nav-right>
+                        </f7-navbar>
+                        <f7-list>
+                            <f7-list-item divider title="Общие"></f7-list-item>
+                            <f7-list-item title="Работа с банерами" popup-close v-on:click="BanerSort()" link=""
+                                class="padding-left under"></f7-list-item>
+                            <f7-list-item divider title="Excel" class="padding-left"></f7-list-item>
+                            <f7-list-item title="Обновить файл Excel" link="" v-on:click="clickExcel()"
+                                class="underGr padding-left"></f7-list-item>
+                            <f7-list-item title="Скачать файл excel" link="http://autogie1.bget.ru/autospravka.xlsx"
+                                external class="padding-left under">
+                                <span slot="footer">Дата обновления: {{DateExcel}}</span>
+                            </f7-list-item>
+                            <f7-list-item divider title="Работа с базой данных"></f7-list-item>
+                            <f7-list-item title="Обновить для приложения" link="" v-on:click="convertToApp()"
+                                class="underGr padding-left"></f7-list-item>
+                                <!-- <f7-list-item title="Переконвертировать старые формат видов деятельности" link="" v-on:click="convertToVids()" -->
+                                class="underGr padding-left"></f7-list-item>
+                            <!-- <f7-list-item title="Преобразовать в новую базу" link="" v-on:click="clickOld(false)"
+                                class="underGr padding-left"></f7-list-item> -->
+                        </f7-list>
+                    </f7-page>
+                </f7-view>
+            </f7-panel>
+
+            <!-- Right Panel with Cover effect and dark layout theme -->
+            <f7-panel right class="bod">
+                <f7-view>
+                    <f7-page>
+                        <f7-navbar title="События" back-link="Back" class="panel-close AddGrey">
+                            <f7-nav-right>
+                                <f7-link icon="icon-bars" panel-open="right"></f7-link>
+                            </f7-nav-right>
+                        </f7-navbar>
+                        <f7-list>
+                            <f7-list-item divider title="Общие"></f7-list-item>
+                            <f7-list-item title="Работа с банерами" link="" class="padding-left under"></f7-list-item>
+                        </f7-list>
+                    </f7-page>
+                </f7-view>
+            </f7-panel>
+            <f7-statusbar></f7-statusbar>
+            <f7-view main class="bod">
+                <!-- Initial Page -->
+                <f7-page class="fonAll ">
+                    <f7-button raised panel-open="left" class="butAbs whiteCol">МЕНЮ</f7-button>
+                    <f7-button raised panel-open="right" class="butAbsRight whiteCol ">События</f7-button>
+                    <f7-block>
+                        <f7-row class="text-align-left no-margin no-gap">
+                            <!--Отдел рубрик-->
+                            <f7-col width="20" class="upTitul">
+                                <h2 class="text-align-center">Рубрики</h2>
+                                <f7-link class="butMain margin-bottom" v-on:click="addDiv(true)">Добавить рубрику
+                                </f7-link>
+                                <f7-row class="margin-bottom red justify-content-space-between">
+                                    <f7-col width="55" class="">
+                                        <f7-link v-if="sortableSub !== 'Закончить изменения'" class="black butMain "
+                                            sortable-toggle=".sortableDiv" v-on:click="SortDiv">{{sortable}}</f7-link>
+                                        <f7-link class="black butMain" v-if="sortableSub === 'Закончить изменения'"
+                                            v-on:click="SortDiv">{{sortable}}</f7-link>
+                                    </f7-col>
+                                    <f7-col width="40" class="">
+                                        <f7-link v-if="!divVis" title="Переключить фильтр на  'Все'" v-on:click="DivVis"
+                                            class="black butMain">Отображенные</f7-link>
+                                        <f7-link v-if="divVis" title="Переключить фильтр на  'Отображенные'"
+                                            v-on:click="DivVis" class="black butMain">Все</f7-link>
+                                        </f7-link>
+                                    </f7-col>
+                                </f7-row>
+                                <f7-list class="Ftab sortableDiv" sortable @sortable:sort="onSortDiv">
+                                    <f7-list-item class="lineAll" link no-chevron :title="item.name"
+                                        v-for="(item, index) in Div" :key="item.id" :target="item.id"
+                                        v-on:click="setDiv(item.id, index)"
+                                        v-bind:class="{ lineAll: curIdDiv !== item.id, lineFill: curIdDiv === item.id, lineAllGr: index % 2 === 0,
+                                      red: '1' === item.red, noDisplay: '1' !==  item.display, hidden: divVis===false && '1' !==  item.display}">
+                                        <span slot="after">
+                                            <f7-fab position="right-center" slot="fixed" class="myFab fab-button"
+                                                v-bind:class="{myFab2: sortable==='Закончить изменения'}">
+                                                <f7-icon f7="menu" title="Меню" class=""></f7-icon>
+                                                <f7-icon f7="close"></f7-icon>
+                                                <f7-fab-buttons position="left">
+                                                    <f7-fab-button v-on:click="editDiv(index, item.id)" fab-close
+                                                        title="Редактировать">
+                                                        <f7-icon f7="compose"></f7-icon>
+                                                    </f7-fab-button>
+                                                    <f7-fab-button v-on:click="delDiv(index, item.id)" fab-close
+                                                        title="Удалить">
+                                                        <f7-icon f7="trash"></f7-icon>
+                                                    </f7-fab-button>
+                                                    <f7-fab-button v-on:click="redDiv(index, item.id)" fab-close
+                                                        title="Красный цвет">
+                                                        <f7-icon f7="circle_fill"
+                                                            v-bind:class="{ red: item.red !== '1'}"></f7-icon>
+                                                    </f7-fab-button>
+                                                    <f7-fab-button v-on:click="disDiv(index, item.id)" fab-close
+                                                        title="Видимость">
+                                                        <f7-icon f7="eye_fill"
+                                                            v-bind:class="{ black: item.pos === '1'}"></f7-icon>
+                                                    </f7-fab-button>
+                                                </f7-fab-buttons>
+                                            </f7-fab>
+                                        </span>
+                                    </f7-list-item>
+                                </f7-list>
+                            </f7-col>
+                            <!--Отдел подрубрик-->
+                            <f7-col width="25" class="upTitul">
+                                <h2 class="text-align-center">Подрубрики</h2>
+                                <f7-link class="butMain margin-bottom" v-on:click="addSub()">Добавить подрубрику
+                                </f7-link>
+                                <f7-row class="margin-bottom red justify-content-space-between">
+                                    <f7-col width="55" class="">
+                                        <f7-link v-if="sortable !== 'Закончить изменения'" class="black butMain "
+                                            sortable-toggle=".sortableSub" v-on:click="SortSub">{{sortableSub}}
+                                        </f7-link>
+                                        <f7-link class="black butMain" v-if="sortable === 'Закончить изменения'"
+                                            v-on:click="SortSub">{{sortableSub}}</f7-link>
+                                    </f7-col>
+                                    <f7-col width="40" class="">
+                                        <f7-link v-if="!subVis" title="Переключить фильтр на  'Все'"
+                                            v-on:click="SubVis()" class="black butMain">Отображенные</f7-link>
+                                        <f7-link v-if="subVis" title="Переключить фильтр на  'Отображенные'"
+                                            v-on:click="SubVis()" class="black butMain">Все</f7-link>
+                                    </f7-col>
+                                </f7-row>
+                                <f7-list class="Ftab sortableSub" sortable @sortable:sort="onSortSub">
+                                    <f7-list-item link no-chevron class="lineSub" :title="item.name"
+                                        v-for="(item, index) in Sub" :key="item.id" v-if="item.parent === curIdDiv "
+                                        :target="item.id" v-on:click="setSub(item.id, index)"
+                                        v-bind:class="{ lineAll: curIdSub !== item.id, lineFill: curIdSub === item.id,  lineAllGr: index % 2 === 0 ,
+                                      red: '1' === item.red, noDisplay: '1' !==  item.display, hidden: subVis===false && '1' !==  item.display}">
+                                        <span slot="after">
+                                            <f7-fab position="right-center" slot="fixed" class="myFabSub"
+                                                v-bind:class="{myFab2: sortableSub==='Закончить изменения'}">
+                                                <f7-icon f7="menu" title="Меню"></f7-icon>
+                                                <f7-icon f7="close"></f7-icon>
+                                                <f7-fab-buttons position="left">
+                                                    <f7-fab-button v-on:click="editSub(index, item.id)" fab-close
+                                                        title="Редактировать">
+                                                        <f7-icon f7="compose"></f7-icon>
+                                                    </f7-fab-button>
+                                                    <f7-fab-button v-on:click="delSub(index, item.id)" fab-close
+                                                        title="Удалить">
+                                                        <f7-icon f7="trash"></f7-icon>
+                                                    </f7-fab-button>
+                                                    <f7-fab-button v-on:click="redSub(index, item.id)" fab-close
+                                                        title="Красный цвет">
+                                                        <f7-icon f7="circle_fill"
+                                                            v-bind:class="{ red: item.red !== '1'}"></f7-icon>
+                                                    </f7-fab-button>
+                                                    <f7-fab-button v-on:click="disSub(index, item.id)" fab-close
+                                                        title="Видимость">
+                                                        <f7-icon f7="eye_fill"
+                                                            v-bind:class="{ black: item.pos === '1'}"></f7-icon>
+                                                    </f7-fab-button>
+                                                </f7-fab-buttons>
+                                            </f7-fab>
+                                        </span>
+                                    </f7-list-item>
+                                </f7-list>
+                            </f7-col>
+
+                            <!--Отдел фирм-->
+                            <f7-col width="25" class="upTitul">
+                                <h2 class="text-align-center">Фирмы (подрубрика)</h2>
+                                <f7-row class="align-items-center">
+                                    <f7-col width="80" class="mar-10">
+                                        <f7-searchbar search-container=".search-list" placeholder="Поиск по подрубрике"
+                                            search-in=".item-title"></f7-searchbar>
+                                    </f7-col>
+                                    <f7-col width="20">
+                                        <f7-link class="addRaz AddGrey " v-on:click="sortAct(true)">
+                                            <f7-icon v-if="ActAlfa" f7="sort_round_fill" color="white"
+                                                title="Переключить сортировку на актуальность"></f7-icon>
+                                            <f7-icon v-if="!ActAlfa" f7="time_fill" color="white"
+                                                title="Переключить сортировку в обычный режим"></f7-icon>
+                                    </f7-col>
+                                </f7-row>
+                                <f7-list class="searchbar-not-found">
+                                    <f7-list-item title="Нет подходящих фирм"></f7-list-item>
+                                </f7-list>
+                                <f7-list class="Ftab3 search-list searchbar-found">
+                                    <f7-list-item class="lineAll" v-for="(item, index) in firmsSub" :key="item.id" link
+                                        no-chevron :target="item.id" v-on:click="editFirma(item.id, index)"
+                                        v-bind:class="{ red: (item.red.indexOf(',' + curIdSub + ',') !== -1)
+                                                  || (item.prioritet_show.indexOf(',' + curIdSub + ',') !== -1), noDisplay: '1' !==  item.display,
+                                                  lineAllGr: index % 2 === 0 }">
+                                        <span slot="title" class="">
+                                            <f7-badge color="black"
+                                                v-if="item.prioritet_show.indexOf(',' + curIdSub + ',') !== -1 && item.prioritet === '46' ">
+                                                5</f7-badge>
+                                            <f7-badge color="red"
+                                                v-if="item.prioritet_show.indexOf(',' + curIdSub + ',') !== -1 && item.prioritet === '47' ">
+                                                4</f7-badge>
+                                            <f7-badge color="black"
+                                                v-if="item.prioritet_show.indexOf(',' + curIdSub + ',') !== -1 && item.prioritet === '48' ">
+                                                3</f7-badge>
+                                            <f7-badge color="red"
+                                                v-if="item.prioritet_show.indexOf(',' + curIdSub + ',') !== -1 && item.prioritet === '49' ">
+                                                2</f7-badge>
+                                            <f7-badge color="black"
+                                                v-if="item.prioritet_show.indexOf(',' + curIdSub + ',') !== -1 && item.prioritet === '50'">
+                                                1</f7-badge>
+                                            {{item.name}}
+                                        </span>
+                                        <div slot="footer" class="aft">
+                                            <div v-if="item.address[0] ==='['">
+                                                {{JSON.parse(item.address)[0].adres}}
+                                                <div class="display-none">{{JSON.parse(item.address)[0].tel1}}
+                                                    {{JSON.parse(item.address)[0].tel2}}
+                                                    {{JSON.parse(item.address)[0].tel3}}</div>
+                                                <div v-if="JSON.parse(item.address).length > 1">
+                                                    {{JSON.parse(item.address)[1].adres}}
+                                                    <div class="display-none">{{JSON.parse(item.address)[1].tel1}}
+                                                        {{JSON.parse(item.address)[1].tel2}}
+                                                        {{JSON.parse(item.address)[1].tel3}}</div>
+                                                </div>
+                                                <div v-if="JSON.parse(item.address).length > 2">
+                                                    {{JSON.parse(item.address)[2].adres}}
+                                                    <div class="display-none">{{JSON.parse(item.address)[2].tel1}}
+                                                        {{JSON.parse(item.address)[2].tel2}}
+                                                        {{JSON.parse(item.address)[2].tel3}}</div>
+                                                </div>
+                                                <div v-if="JSON.parse(item.address).length > 3">
+                                                    {{JSON.parse(item.address)[3].adres}}
+                                                    <div class="">{{JSON.parse(item.address)[3].tel1}}
+                                                        {{JSON.parse(item.address)[3].tel2}}
+                                                        {{JSON.parse(item.address)[3].tel3}}</div>
+                                                </div>
+                                                <div v-if="JSON.parse(item.address).length > 4">
+                                                    {{JSON.parse(item.address)[4].adres}}
+                                                    <div class="">{{JSON.parse(item.address)[4].tel1}}
+                                                        {{JSON.parse(item.address)[4].tel2}}
+                                                        {{JSON.parse(item.address)[4].tel3}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <span slot="title" class="after"
+                                            v-if="item.vid !== null && item.vid !== 0 &&  item.vid !== '' ">
+                                            {{Vids[item.vid].name}}
+                                        </span>
+                                        <div slot="after" class="text-align-right">
+                                            <div>
+                                                <f7-badge color="orange"
+                                                    v-if="JSON.parse(item.baner).show.indexOf(',' + curIdSub + ',') !== -1 && JSON.parse(item.baner).baner !== ''">
+                                                    Банер</f7-badge>
+                                                <f7-badge color="red"
+                                                    v-if="JSON.parse(item.action).show.indexOf(',' + curIdSub + ',') !== -1 && JSON.parse(item.action).fill !== ''">
+                                                    Aкция</f7-badge>
+                                                <f7-badge color="green"
+                                                    v-if="JSON.parse(item.info).show.indexOf(',' + curIdSub + ',') !== -1 && JSON.parse(item.info).fill !== ''">
+                                                    Инфа</f7-badge>
+                                                <f7-badge color="blue"
+                                                    v-if="JSON.parse(item.stat).show.indexOf(',' + curIdSub + ',') !== -1 && JSON.parse(item.stat).fill !== ''">
+                                                    Статья</f7-badge>
+                                            </div>
+                                            <div class="dateF">
+                                                <div class="dateF">
+                                                    {{item.actual_date.slice(8,10)}}-{{item.actual_date.slice(5,7)}}-{{item.actual_date.slice(0,4)}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </f7-list-item>
+                                </f7-list>
+                            </f7-col>
+                            <!--Фирмы-->
+                            <f7-col width="25" class="upTitul" id="firms">
+                                <h2 class="text-align-center">Фирмы (общий список)</h2>
+                                <f7-link class="butMain margin-bottom" v-on:click="addFirma()">Добавить фирму</f7-link>
+                                <f7-row class="align-items-center">
+                                    <f7-col width="80" class="mar-10">
+                                        <f7-searchbar class="Fsmall" search-container=".search-list2"
+                                            placeholder="Поиск по всему списку" id="re2" search-in=".item-title">
+                                        </f7-searchbar>
+                                    </f7-col>
+                                    <f7-col width="20">
+                                        <f7-link class="addRaz AddGrey " v-on:click="sortAct(false)">
+                                            <f7-icon v-if="ActAlfa2" f7="sort_round_fill" color="white"
+                                                title="Переключить сортировку на актуальность"></f7-icon>
+                                            <f7-icon v-if="!ActAlfa2" f7="time_fill" color="white"
+                                                title="Переключить сортировку в обычный режим"></f7-icon>
+                                    </f7-col>
+                                </f7-row>
+                                <f7-list class="vybor mar-10">
+                                    <f7-list-item title="Фильтр, выбрано:" smart-select
+                                        :smart-select-params="{openIn: 'popover', closeOnSelect: 'true'}"
+                                        @change="selFiltr = $event.target.value">
+                                        <select class="maxmin" name="Prior" @change="selFiltr = $event.target.value">
+                                            <option value="0" class="Fblack" selected>Все</option>
+                                            <option value="1">Приоритет</option>
+                                            <option value="2">С банерами</option>
+                                            <option value="3">С акциями</option>
+                                            <option value="4">Со статьями</option>
+                                            <option value="5">С информацией</option>
+                                            <option value="6">Неотображаемые</option>
+                                            <option value="7">Отображаемые</option>
+                                            <option value="8">Платники</option>
+                                            <option value="9">Бесплатники</option>
+                                        </select>
+                                </f7-list>
+                                <f7-list class="searchbar-not-found">
+                                    <f7-list-item title="Нет подходящих фирм"></f7-list-item>
+                                </f7-list>
+                                <f7-list class="Ftab4 search-list2 searchbar-found">
+                                    <f7-list-item link no-chevron class="lineAll" :title="item.name"
+                                        v-for="(item, index) in Firms" :key="item.id"
+                                        v-on:click="editFirma(item.id, index)" v-if="myVue.selFiltr === '0' || (myVue.selFiltr === '1' && item.prioritet_show !==''&& item.prioritet !=='')
+                                            || (myVue.selFiltr === '2' && JSON.parse(item.baner).show !== '' && JSON.parse(item.baner).baner)
+                                            || (myVue.selFiltr === '3' && JSON.parse(item.action).show !== ''  && JSON.parse(item.action).fill !== '')
+                                            || (myVue.selFiltr === '4' && JSON.parse(item.stat).show !== '' && JSON.parse(item.stat).fill !== '')
+                                            || (myVue.selFiltr === '5' && JSON.parse(item.info).show !== ''  && JSON.parse(item.info).fill !== '')
+                                            || (myVue.selFiltr === '6' && (item.display === '0' || item.display === ''))
+                                            || (myVue.selFiltr === '7' && item.display === '1' )
+                                            || (myVue.selFiltr === '8' && item.plat === 1)
+                                            || (myVue.selFiltr === '9' && item.plat === 0) " :target="item.id"
+                                        v-bind:class="{ noDisplay: '1' !==  item.display, lineAllGr: index % 2 === 0 }">
+                                        <div slot="footer" class="aft">
+                                            <div v-if="item.address[0] ==='['">
+                                                {{JSON.parse(item.address)[0].adres}}
+                                                <div class="">{{JSON.parse(item.address)[0].tel1}} &nbsp;
+                                                    {{JSON.parse(item.address)[0].tel2}} &nbsp;
+                                                    {{JSON.parse(item.address)[0].tel3}}</div>
+                                                <div v-if="JSON.parse(item.address).length > 1">
+                                                    {{JSON.parse(item.address)[1].adres}}
+                                                    <div class="">{{JSON.parse(item.address)[1].tel1}} &nbsp;
+                                                        {{JSON.parse(item.address)[1].tel2}} &nbsp;
+                                                        {{JSON.parse(item.address)[1].tel3}}</div>
+                                                </div>
+                                                <div v-if="JSON.parse(item.address).length > 2">
+                                                    {{JSON.parse(item.address)[2].adres}}
+                                                    <div class="">{{JSON.parse(item.address)[2].tel1}} &nbsp;
+                                                        {{JSON.parse(item.address)[2].tel2}} &nbsp;
+                                                        {{JSON.parse(item.address)[2].tel3}}</div>
+                                                </div>
+                                                <div v-if="JSON.parse(item.address).length > 3">
+                                                    {{JSON.parse(item.address)[3].adres}}
+                                                    <div class="">{{JSON.parse(item.address)[3].tel1}} &nbsp;
+                                                        {{JSON.parse(item.address)[3].tel2}} &nbsp;
+                                                        {{JSON.parse(item.address)[3].tel3}}</div>
+                                                </div>
+                                                <div v-if="JSON.parse(item.address).length > 4">
+                                                    {{JSON.parse(item.address)[4].adres}}
+                                                    <div class="">{{JSON.parse(item.address)[4].tel1}} &nbsp;
+                                                        {{JSON.parse(item.address)[4].tel2}} &nbsp;
+                                                        {{JSON.parse(item.address)[4].tel3}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div slot="after" class="text-align-right dateF">
+                                            <div class="dateF">
+                                                {{item.actual_date.slice(8,10)}}-{{item.actual_date.slice(5,7)}}-{{item.actual_date.slice(0,4)}}
+                                            </div>
+                                        </div>
+                                    </f7-list-item>
+                                </f7-list>
+                            </f7-col>
+                        </f7-row>
+                    </f7-block>
+                    <!--Окно для добавления или изменения рубрики-->
+                    <f7-popup class="Div-popup" style="outline: 1px solid white">
+                        <f7-page id="ret">
+                            <f7-navbar :title="titulDiv" id="titDiv" class="AddGrey">
+                                <f7-nav-right>
+                                    <f7-link popup-close v-on:click="closeDiv()">
+                                        <div class="butForm ">Назад</div>
+                                    </f7-link>
+                                    <f7-link id="saveDiv" v-on:click="saveDiv()">
+                                        <div class="butForm">Сохранить</div>
+                                    </f7-link>
+                                </f7-nav-right>
+                            </f7-navbar>
+                            <f7-block>
+                                <f7-list inline-labels no-hairlines>
+                                    <f7-list-input label="Название рубрики" type="text" placeholder="Введите название"
+                                        class="padding-vertical border" :value="curDiv.name"
+                                        @input="curDiv.name = $event.target.value" autofocus>
+                                    </f7-list-input>
+                                    <f7-list-item-row class="align-items-center padding-vertical border">
+                                        <f7-col width="30">Цвет</f7-col>
+                                        <f7-col width="35">
+                                            <f7-list-item radio @change="curDiv.red = $event.target.value"
+                                                :checked="curDiv.red === '0'" value="0" name="red" title="Черный">
+                                            </f7-list-item>
+                                        </f7-col>
+                                        <f7-col width="35">
+                                            <f7-list-item radio @change="curDiv.red = $event.target.value"
+                                                :checked="curDiv.red === '1'" value="1" name="red" title="Красный">
+                                            </f7-list-item>
+                                        </f7-col>
+                                    </f7-list-item-row>
+                                    <f7-list-item-row class="align-items-center padding-vertical border">
+                                        <f7-col width="30">Видимость</f7-col>
+                                        <f7-col width="35">
+                                            <f7-list-item radio @change="curDiv.display = $event.target.value"
+                                                :checked="curDiv.display === '1'" value="1" name="display"
+                                                title="Отображать"></f7-list-item>
+                                        </f7-col>
+                                        <f7-col width="35">
+                                            <f7-list-item radio @change="curDiv.display = $event.target.value"
+                                                :checked="curDiv.display === '0'" value="0" name="display"
+                                                title="Скрывать"></f7-list-item>
+                                        </f7-col>
+                                    </f7-list-item-row>
+                                    <f7-list-input type="text" resizable placeholder="Введите информацию"
+                                        class="padding-vertical border" :value="curDiv.info"
+                                        @input="curDiv.info = $event.target.value">
+                                        <div slot="root-start">Дополнительная информация:</div>
+                                    </f7-list-input>
+                                    <f7-list-item class="padding-vertical border">
+                                        <f7-item>Время последнего редактирования: </f7-item>
+                                        <span>{{curDiv.last_edit}}</span>
+                                    </f7-list-item>
+                                    <f7-list-item class="padding-vertical">
+                                        <f7-item id="infoDiv" class="red"></f7-item>
+                                    </f7-list-item>
+                                </f7-list>
+                            </f7-block>
+                        </f7-page>
+                    </f7-popup>
+                    <!--Окно для добавления или изменения подрубрики-->
+                    <f7-popup class="Sub-popup" style="outline: 1px solid white">
+                        <f7-page id="ret">
+                            <f7-navbar :title="titulSub" id="titSub" class="AddGrey">
+                                <f7-nav-right>
+                                    <f7-link popup-close v-on:click="closeSub()">
+                                        <div class="butForm ">Назад</div>
+                                    </f7-link>
+                                    <f7-link id="saveSub" v-on:click="saveSub()">
+                                        <div class="butForm">Сохранить</div>
+                                    </f7-link>
+                                </f7-nav-right>
+                            </f7-navbar>
+                            <f7-block>
+                                <f7-list inline-labels no-hairlines>
+                                    <f7-list-input label="Название подрубрики" type="text"
+                                        placeholder="Введите название" class="padding-vertical border"
+                                        :value="curSub.name" @input="curSub.name = $event.target.value" autofocus>
+                                    </f7-list-input>
+                                    <f7-list-item-row class="align-items-center padding-vertical border">
+                                        <f7-col width="30">Цвет</f7-col>
+                                        <f7-col width="35">
+                                            <f7-list-item radio @change="curSub.red = $event.target.value"
+                                                :checked="curSub.red === '0'" value="0" name="red" title="Черный">
+                                            </f7-list-item>
+                                        </f7-col>
+                                        <f7-col width="35">
+                                            <f7-list-item radio @change="curSub.red = $event.target.value"
+                                                :checked="curSub.red === '1'" value="1" name="red" title="Красный">
+                                            </f7-list-item>
+                                        </f7-col>
+                                    </f7-list-item-row>
+                                    <f7-list-item-row class="align-items-center padding-vertical border">
+                                        <f7-col width="30">Видимость</f7-col>
+                                        <f7-col width="35">
+                                            <f7-list-item radio @change="curSub.display = $event.target.value"
+                                                :checked="curSub.display === '1'" value="1" name="display"
+                                                title="Отображать"></f7-list-item>
+                                        </f7-col>
+                                        <f7-col width="35">
+                                            <f7-list-item radio @change="curSub.display = $event.target.value"
+                                                :checked="curSub.display === '0'" value="0" name="display"
+                                                title="Скрывать"></f7-list-item>
+                                        </f7-col>
+                                    </f7-list-item-row>
+                                    <f7-list-input type="text" resizable placeholder="Введите информацию"
+                                        class="padding-vertical border" :value="curSub.info"
+                                        @input="curSub.info = $event.target.value">
+                                        <div slot="root-start">Дополнительная информация:</div>
+                                    </f7-list-input>
+                                    <f7-list-item class="padding-vertical border">
+                                        <f7-item>Время последнего редактирования: </f7-item>
+                                        <span>{{curSub.last_edit}}</span>
+                                    </f7-list-item>
+                                    <f7-list-item class="padding-vertical">
+                                        <f7-item id="infoSub" class="red"></f7-item>
+                                    </f7-list-item>
+                                </f7-list>
+                            </f7-block>
+                        </f7-page>
+                    </f7-popup>
+
+                    <!--Окно для добавления или изменения фирмы-->
+                    <f7-popup class="firma-popup " style="outline: 1px solid white">
+                        <f7-page id="ret">
+                            <f7-navbar :title="titulFirma" id="titFirma" class="AddGrey">
+                                <f7-nav-right class="margin-right">
+                                    <f7-link popup-close v-on:click="">
+                                        <div class="butForm ">Назад</div>
+                                    </f7-link>
+                                    <f7-link id="saveFirma" v-on:click="saveFirma()">
+                                        <div class="butForm">Сохранить</div>
+                                    </f7-link>
+                                    <f7-link id="saveFirma" v-on:click="saveFirma('back')">
+                                        <div class="butForm">Сохранить и вернуться</div>
+                                    </f7-link>
+                                    <f7-link id="delFirma" v-on:click="deleteFirma()">
+                                        <div class="butForm">Удалить фирму</div>
+                                    </f7-link>
+                                </f7-nav-right>
+                            </f7-navbar>
+                            <f7-block class="firmaEdit">
+                                <f7-list class="no-hairlines">
+                                    <!--Название фирмы-->
+                                    <div id="infoFirma" class="red"></div>
+                                    <f7-list-item>
+                                        <f7-row class="align-items-center ">
+                                            <f7-col width="35" class="firmItemName ">
+                                                <f7-label class="blueTitul" id="labFirma">Название фирмы</f7-label>
+                                                <f7-input :value="firma.name" v-on:change="change()"
+                                                    @input="firma.name = $event.target.value" type="text"
+                                                    class="lightYellow" autofocus placeholder="Введите название фирмы">
+                                                </f7-input>
+                                            </f7-col>
+                                            <f7-col width="25" class="firmItemName st">
+                                                <f7-label class="blueTitul ">Вид деятельности</f7-label>
+                                                <select class="lightYellow link" id="vid" :value="firma.vid" name="vid"
+                                                    @input="firma.vid = $event.target.value">
+                                                    <option v-for="(item, index) in VidsAll" :key="item.id"
+                                                        :value="item.id">{{item.name}}
+                                                    </option>
+                                                </select>
+                                            </f7-col>
+                                            <f7-col width="40" class="firmItemName">
+                                                <f7-label class="blueTitul">Название нового вида деятельности</f7-label>
+                                                <f7-row class="align-items-center">
+                                                    <f7-col width="60" class="">
+                                                        <f7-input :value="curVid" id="vidStav"
+                                                            @input="curVid = $event.target.value" type="text"
+                                                            class="lightYellow"></f7-input>
+                                                    </f7-col>
+                                                    <f7-col width="40" class="">
+                                                        <f7-button small fill round class="AddGrey" id="btnNewVid"
+                                                            v-on:click="addVid()"> Добавить </f7-button>
+                                                    </f7-col>
+                                                </f7-row>
+                                            </f7-col>
+                                        </f7-row>
+                                    </f7-list-item>
+                                    <!--Видимость, платники и дата актуальности-->
+                                    <f7-list-item class="align-self-flex-start">
+                                        <f7-row class="align-items-center">
+                                            <f7-col width="25" class="firmItemName">
+                                                <f7-list-item checkbox
+                                                    @change="firma.plat = Number($event.target.checked)" color="black"
+                                                    title="" id="plat" v-on:change="change()"
+                                                    :checked="firma.plat === 1">
+                                                    <span v-if="firma.plat !== 1" class="title prLeft"
+                                                        title="Выводит на печать первый телефон, без сайта">Платник</span>
+                                                    <span v-if="firma.plat === 1" class="title prLeft"
+                                                        title="Выводит на печать дополнительно ВСЕ ТЕЛЕФОНЫ и САЙТ">Платник</span>
+                                                </f7-list-item>
+                                            </f7-col>
+                                            <f7-col width="25" class="firmItemName">
+                                                <f7-list-item checkbox
+                                                    @change="firma.display = Number($event.target.checked)+''"
+                                                    color="black" :checked="firma.display === '1'"
+                                                    v-on:change="change()">
+                                                    <span class="title prLeft">Отображать</span>
+                                                </f7-list-item>
+                                            </f7-col>
+                                            <f7-col width="50" class="firmItemName">
+                                                <f7-row class="align-items-center">
+                                                    <f7-col width="40">
+                                                        <!--Дата актуальности-->
+                                                        <f7-label class="blueTitul ">Дата актуальности:</f7-label>
+                                                        <div class="dateFirma text-align-center">
+                                                            {{(firma.actual_date+'').slice(8,10)}}-{{(firma.actual_date+'').slice(5,7)}}-{{(firma.actual_date+'').slice(0,4)}}
+                                                        </div>
+                                                    </f7-col>
+                                                    <f7-col width="50">
+                                                        <f7-button small fill round class="AddGrey"
+                                                            v-on:click="ActFirma()"> Актуализировать</f7-button>
+                                                    </f7-col>
+                                                </f7-row>
+                                            </f7-col>
+                                        </f7-row>
+                                    </f7-list-item>
+                                    <!--Контактное лицо-->
+                                    <f7-list-item class="align-self-flex-start">
+                                        <f7-row class="align-items-center">
+                                            <f7-col width="50" class="firmItemName">
+                                                <f7-label class="blueTitul ">Контактное лицо</f7-label>
+                                                <f7-input :value="firma.fio" v-on:change="change()"
+                                                    @input="firma.fio= $event.target.value" type="text"
+                                                    class="lightYellow" placeholder="Введите контактное лицо">
+                                                </f7-input>
+                                            </f7-col>
+                                            <f7-col width="50" class="firmItemName">
+                                                <f7-label class="blueTitul ">Телефон</f7-label>
+                                                <f7-input :value="firma.con_phone" v-on:change="change()"
+                                                    @input="firma.con_phone= $event.target.value" type="text"
+                                                    class="lightYellow" placeholder="Введите телефон"></f7-input>
+                                            </f7-col>
+                                        </f7-row>
+                                    </f7-list-item>
+                                    <!--Табы с рубриками-->
+                                    <f7-list-item class="firmItem">
+                                        <div class="blueTitul" slot="root-start">
+                                            Вид размещения фирмы:
+                                            <span class="black margin-bottom">
+                                                <f7-badge color="red"> Приоритет - {{StatFirma.Prior}} </f7-badge>
+                                                <f7-badge color="white" class="okant red"> Красные - {{StatFirma.Red}}
+                                                </f7-badge>
+                                                <f7-badge color="white" class="okant"> Черные - {{StatFirma.Black}}
+                                                </f7-badge>
+                                                <f7-badge color="orange"> Банера - {{StatFirma.Ban}} </f7-badge>
+                                                <f7-badge color="red"> Акции - {{StatFirma.Act}} </f7-badge>
+                                                <f7-badge color="green"> Инфа - {{StatFirma.Info}} </f7-badge>
+                                                <f7-badge color="blue"> Статьи - {{StatFirma.Stat}} </f7-badge>
+                                                <f7-badge color="pink"> В печать - {{StatFirma.print}} </f7-badge>
+                                            </span>
+                                        </div>
+                                        <f7-page-content class="pageFirm">
+                                            <f7-toolbar tabbar class="tabFirm">
+                                                <f7-link tab-link="#tab-1" tab-link-active>Рубрики</f7-link>
+                                                <f7-link tab-link="#tab-2">Банер</f7-link>
+                                                <f7-link tab-link="#tab-3">Доп. инфо</f7-link>
+                                                <f7-link tab-link="#tab-4">Статья</f7-link>
+                                                <f7-link tab-link="#tab-5">Акция</f7-link>
+                                            </f7-toolbar>
+                                            <f7-tabs class="padding-top">
+                                                <!--блок с выбором красных, черных и приоритетных рубрик-->
+                                                <f7-tab id="tab-1" class="" tab-active>
+                                                    <f7-row>
+                                                        <f7-col width="20" class="upTitulFirm">
+                                                            <span class="text-align-center">Рубрики</span>
+                                                            <f7-list class="FtabFirm">
+                                                                <f7-list-item link no-chevron class="lineAllFirm"
+                                                                    :title="item.name" v-for="(item, index) in Div"
+                                                                    :key="item.id" :target="item.id"
+                                                                    v-on:click="setDivFirma(item.id, index)"
+                                                                    v-bind:class="{ lineAllFirm: curIdDiv !== item.id, lineFillFirm: curIdDivFirm === item.id,
+                                      red: '1' === item.red, noDisplay: '1' !==  item.display, hidden: divVis===false && '1' !==  item.display}">
+                                                                </f7-list-item>
+                                                            </f7-list>
+                                                        </f7-col>
+                                                        <f7-col width="30" class="upTitulFirm">
+                                                            <span class="text-align-center">Подрубрики</span>
+                                                            <f7-list class="FtabFirm">
+                                                                <f7-list-item class="lineAllFirm" :title="item.name"
+                                                                    v-for="(item, index) in Sub" :key="item.id"
+                                                                    popover-open=".addSubFirma" :target="item.id"
+                                                                    v-bind:class="{ lineAllFirmBlue: curIdSub !== item.id, noDisplay: '1' !==  item.display, hidden: subVis===false && '1' !==  item.display,
+                                                         red: (firma.red !== undefined && firma.red.indexOf(',' + item.id + ',') !== -1 )
+                                                       || (firma.prioritet_show !== undefined  && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet !== '' ),
+                                                             black: (firma.black !== undefined  && firma.black.indexOf(',' + item.id + ',') !== -1)}"
+                                                                    v-if="item.parent === curIdDivFirm" no-chevron link
+                                                                    v-on:click="SetSubFirma(item.id, 0)">
+                                                                </f7-list-item>
+                                                            </f7-list>
+                                                        </f7-col>
+                                                        <f7-col width="50" class="upTitulFirm">
+                                                            <span class="padding-left">
+                                                                Фирма в рубриках
+                                                            </span>
+                                                            <f7-list class="FtabFirm">
+                                                                <f7-list-item class="lineFillFirm" :title="itemDiv.name"
+                                                                    v-for="(itemDiv, indexDiv) in Div" :key="itemDiv.id"
+                                                                    :target="itemDiv.id"
+                                                                    v-bind:class="{ lineFillFirm: curIdDiv === itemDiv.id, red: '1' === itemDiv.red,
+                                                        noDisplay: '1' !==  itemDiv.display, hidden: divVis===false && '1' !==  itemDiv.display}">
+                                                                    <span slot="root-end">
+                                                                        <f7-list class="upTitulSub">
+                                                                            <f7-list-item class="lineAllFirm"
+                                                                                v-for="(item, index) in Sub"
+                                                                                :key="item.id"
+                                                                                v-if="item.parent === itemDiv.id && ((firma.red !== undefined && firma.red.indexOf(',' + item.id + ',') !== -1 )
+                                                                        || (firma.black !== undefined  && firma.black.indexOf(',' + item.id + ',') !== -1)
+                                                                        || (firma.prioritet_show !== undefined  && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet !== '' ))"
+                                                                                :target="item.id"
+                                                                                v-bind:class="{ lineAllFirm: curIdSub !== item.id,
+                                                                                          red: (firma.red !== undefined && firma.red.indexOf(',' + item.id + ',') !== -1)
+                                                                                          || (firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1),
+                                                                      noDisplay: '1' !==  item.display, hidden: subVis===false && '1' !==  item.display}"
+                                                                                no-chevron link
+                                                                                popover-open=".delSubFirma"
+                                                                                v-on:click="SetSubFirma(item.id, item.parent)">
+                                                                                <span slot="root-start" class="tiBef"
+                                                                                    title="Печатать в издании">
+                                                                                    <f7-list-item
+                                                                                        v-if="firma.print === '' "
+                                                                                        checkbox name="checkbox0"
+                                                                                        v-on:click="setcheck(item.id, item.parent)">
+                                                                                    </f7-list-item>
+                                                                                    <f7-list-item
+                                                                                        v-if="firma.print.indexOf(',' + item.id + ',') === -1"
+                                                                                        checkbox name="checkbox1"
+                                                                                        v-on:click="setcheck(item.id, item.parent)">
+                                                                                    </f7-list-item>
+                                                                                    <f7-list-item
+                                                                                        v-if="firma.print.indexOf(',' + item.id + ',') !== -1"
+                                                                                        checkbox name="checkbox2"
+                                                                                        checked
+                                                                                        v-on:click="setcheck(item.id, item.parent)">
+                                                                                    </f7-list-item>
+                                                                                </span>
+                                                                                <span slot="title" class="">
+                                                                                    <f7-badge color="black"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '46' ">
+                                                                                        5</f7-badge>
+                                                                                    <f7-badge color="red"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '47' ">
+                                                                                        4</f7-badge>
+                                                                                    <f7-badge color="black"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '48'">
+                                                                                        3</f7-badge>
+                                                                                    <f7-badge color="red"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '49' ">
+                                                                                        2</f7-badge>
+                                                                                    <f7-badge color="black"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '50'">
+                                                                                        1</f7-badge>
+                                                                                    {{item.name}}
+                                                                                </span>
+                                                                                <span slot="after" class="">
+                                                                                    <f7-badge color="orange"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.baner).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.baner).baner !== ''">
+                                                                                        Банер</f7-badge>
+                                                                                    <f7-badge color="green"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.info).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.info).fill !== ''">
+                                                                                        Инфа</f7-badge>
+                                                                                    <f7-badge color="blue"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.stat).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.stat).fill !== ''">
+                                                                                        Статья</f7-badge>
+                                                                                    <f7-badge color="red"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.action).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.action).fill !== ''">
+                                                                                        Акция</f7-badge>
+                                                                                </span>
+                                                                            </f7-list-item>
+                                                                        </f7-list>
+                                                                    </span>
+                                                                </f7-list-item>
+                                                            </f7-list>
+                                                        </f7-col>
+                                                    </f7-row>
+                                                </f7-tab>
+                                                <!--Таб для банеров-->
+                                                <f7-tab id="tab-2" class="">
+                                                    <f7-row>
+                                                        <f7-col width="50" class="upTitulFirm">
+                                                            <f7-list class="no-margin min56">
+                                                                <f7-list-item class="text-align-center ">
+                                                                    Предварительный просмотр банера внутри рубрик
+                                                                </f7-list-item>
+                                                                <f7-list-item class="text-align-left ">
+                                                                    <input
+                                                                        v-on:input="showPic(document.getElementById('file'), false)"
+                                                                        name="userfile" type="file" accept=".svg"
+                                                                        id="file" />
+                                                                </f7-list-item>
+                                                                <f7-list-item>
+                                                                    <f7-row class="">
+                                                                        <f7-col width="70">
+                                                                            <div id="out"></div>
+                                                                        </f7-col>
+                                                                        <f7-col width="30" class="text-align-center ">
+                                                                            <f7-button small fill round class="AddGrey"
+                                                                                v-on:click="addPic(false)">Добавить
+                                                                            </f7-button>
+                                                                        </f7-col>
+                                                                    </f7-row>
+                                                                </f7-list-item>
+                                                                <f7-list-item class="lin"
+                                                                    v-if="FillFirma.baner.baner !== ''">
+                                                                    <f7-list-item>
+                                                                        <f7-label>Банер загружен</f7-label>
+                                                                    </f7-list-item>
+                                                                    <f7-row>
+                                                                        <f7-col width="70" class="">
+                                                                            <f7-col id="baner"></f7-col>
+                                                                        </f7-col>
+                                                                        <f7-col width="25" class="">
+                                                                            <f7-col class="text-align-center">
+                                                                                <f7-button small fill round
+                                                                                    class="AddGrey"
+                                                                                    v-on:click="delPic(false)">Удалить
+                                                                                </f7-button>
+                                                                            </f7-col>
+                                                                        </f7-col>
+                                                                    </f7-row>
+                                                                </f7-list-item>
+                                                               </f7-list>
+                                                            <f7-list class="no-margin min56">
+                                                                <f7-list-item class="text-align-center ">
+                                                                    Предварительный просмотр банера на главной странице
+                                                                </f7-list-item>
+                                                                <f7-list-item class="text-align-left ">
+                                                                    <input
+                                                                        v-on:input="showPic(document.getElementById('fileMain'), true)"
+                                                                        name="userfile" type="file" accept=".svg"
+                                                                        id="fileMain" />
+                                                                </f7-list-item>
+                                                                <f7-list-item>
+                                                                    <f7-row class="">
+                                                                        <f7-col width="70">
+                                                                            <div id="outMain"></div>
+                                                                        </f7-col>
+                                                                        <f7-col width="30" class="text-align-center ">
+                                                                            <f7-button small fill round class="AddGrey"
+                                                                                v-on:click="addPic(true)">Добавить
+                                                                            </f7-button>
+                                                                        </f7-col>
+                                                                    </f7-row>
+                                                                </f7-list-item>
+                                                                <f7-list-item class="lin"
+                                                                    v-if="FillFirma.baner.main">
+                                                                    <f7-list-item>
+                                                                        <f7-label>Банер загружен</f7-label>
+                                                                    </f7-list-item>
+                                                                    <f7-row>
+                                                                        <f7-col width="70" class="">
+                                                                            <f7-col id="banerMain"></f7-col>
+                                                                        </f7-col>
+                                                                        <f7-col width="25" class="">
+                                                                            <f7-col class="text-align-center">
+                                                                                <f7-button small fill round
+                                                                                    class="AddGrey"
+                                                                                    v-on:click="delPic(true)">Удалить
+                                                                                </f7-button>
+                                                                            </f7-col>
+                                                                        </f7-col>
+                                                                    </f7-row>
+                                                                </f7-list-item>
+                                                              </f7-list>
+                                                            
+
+                                                        </f7-col>
+                                                        <f7-col width="50 upTitulFirm">
+                                                            <span class="padding-left">Банера в рубриках</span>
+                                                            <f7-list class="FtabFirm">
+                                                                <f7-list-item class="lineFillFirm" :title="itemDiv.name"
+                                                                    v-for="(itemDiv, indexDiv) in Div" :key="itemDiv.id"
+                                                                    :target="itemDiv.id"
+                                                                    v-bind:class="{ lineFillFirm: curIdDiv === itemDiv.id, red: '1' === itemDiv.red,
+                                                        noDisplay: '1' !==  itemDiv.display, hidden: divVis===false && '1' !==  itemDiv.display}">
+                                                                    <span slot="root-end">
+                                                                        <f7-list class="upTitulSub">
+                                                                            <f7-list-item class="lineAllFirm"
+                                                                                v-for="(item, index) in Sub"
+                                                                                :key="item.id"
+                                                                                v-if="item.parent === itemDiv.id && ((firma.picture !== '' && firma.banner_show !== undefined  && firma.banner_show.indexOf(',' + item.id + ',') !== -1)
+                                                                        || ((firma.red !== undefined && firma.red.indexOf(',' + item.id + ',') !== -1 )
+                                                                        || (firma.black !== undefined  && firma.black.indexOf(',' + item.id + ',') !== -1)
+                                                                        || (firma.prioritet_show !== undefined  && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet !== '' )))"
+                                                                                :target="item.id"
+                                                                                v-bind:class="{ lineAllFirm: curIdSub !== item.id,
+                                                                                           red: (firma.red !== undefined && firma.red.indexOf(',' + item.id + ',') !== -1)
+                                                                                          || (firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1),
+                                                                      noDisplay: '1' !==  item.display, hidden: subVis===false && '1' !==  item.display }"
+                                                                                no-chevron link
+                                                                                v-on:click="SetVsp(item.id, 'banner_show', item.parent)">
+                                                                                <span slot="title" class="">
+                                                                                    <f7-badge color="black"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '46' ">
+                                                                                        5</f7-badge>
+                                                                                    <f7-badge color="red"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '47' ">
+                                                                                        4</f7-badge>
+                                                                                    <f7-badge color="black"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '48'">
+                                                                                        3</f7-badge>
+                                                                                    <f7-badge color="red"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '49' ">
+                                                                                        2</f7-badge>
+                                                                                    <f7-badge color="black"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '50'">
+                                                                                        1</f7-badge> {{item.name}}
+                                                                                </span>
+                                                                                <span slot="after" class="">
+                                                                                    <f7-badge color="orange"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.baner).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.baner).baner !== ''">
+                                                                                        Банер</f7-badge>
+                                                                                    <f7-badge color="green"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.info).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.info).fill !== ''">
+                                                                                        Инфа</f7-badge>
+                                                                                    <f7-badge color="blue"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.stat).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.stat).fill !== ''">
+                                                                                        Статья</f7-badge>
+                                                                                    <f7-badge color="red"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.action).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.action).fill !== ''">
+                                                                                        Акция</f7-badge>
+                                                                                </span>
+                                                                            </f7-list-item>
+                                                                        </f7-list>
+                                                                    </span>
+                                                                </f7-list-item>
+                                                            </f7-list>
+                                                        </f7-col>
+                                                    </f7-row>
+                                                </f7-tab>
+                                                <!--Таб для дополнительной информации-->
+                                                <f7-tab id="tab-3" class="">
+                                                    <f7-row>
+                                                        <f7-col width="50" class="upTitulFirm">
+                                                            <f7-label>Добавьте или отредактируйте информацию</f7-label>
+                                                            <f7-input type="textarea" resizable
+                                                                :value="FillFirma.info.fill" autofocus
+                                                                v-on:change="change()" inputStyle="textarea"
+                                                                @input="FillFirma.info.fill = $event.target.value"
+                                                                class="textareaFirm ">
+                                                            </f7-input>
+                                                        </f7-col>
+                                                        <f7-col width="50 upTitulFirm">
+                                                            <span class="padding-left">Доп. информация в рубриках</span>
+                                                            <f7-list class="FtabFirm">
+                                                                <f7-list-item class="lineFillFirm" :title="itemDiv.name"
+                                                                    v-for="(itemDiv, indexDiv) in Div" :key="itemDiv.id"
+                                                                    :target="itemDiv.id"
+                                                                    v-bind:class="{ lineFillFirm: curIdDiv === itemDiv.id, red: '1' === itemDiv.red,
+                                                        noDisplay: '1' !==  itemDiv.display, hidden: divVis===false && '1' !==  itemDiv.display}">
+                                                                    <span slot="root-end">
+                                                                        <f7-list class="upTitulSub">
+                                                                            <f7-list-item class="lineAllFirm"
+                                                                                v-for="(item, index) in Sub"
+                                                                                :key="item.id"
+                                                                                v-if="item.parent === itemDiv.id && (((firma.red !== undefined && firma.red.indexOf(',' + item.id + ',') !== -1 )
+                                                                        || (firma.black !== undefined  && firma.black.indexOf(',' + item.id + ',') !== -1)
+                                                                        || (firma.prioritet_show !== undefined  && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet !== '' )))"
+                                                                                :target="item.id"
+                                                                                v-bind:class="{ lineAllFirm: curIdSub !== item.id,
+                                                                                          red: (firma.red !== undefined && firma.red.indexOf(',' + item.id + ',') !== -1)
+                                                                                          || (firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1),
+                                                                      noDisplay: '1' !==  item.display, hidden: subVis===false && '1' !==  item.display }"
+                                                                                no-chevron link
+                                                                                v-on:click="SetVsp(item.id, 'info_show', item.parent)">
+                                                                                <span slot="title" class="">
+                                                                                    <f7-badge color="black"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '46' ">
+                                                                                        5</f7-badge>
+                                                                                    <f7-badge color="red"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '47' ">
+                                                                                        4</f7-badge>
+                                                                                    <f7-badge color="black"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '48'">
+                                                                                        3</f7-badge>
+                                                                                    <f7-badge color="red"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '49' ">
+                                                                                        2</f7-badge>
+                                                                                    <f7-badge color="black"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '50'">
+                                                                                        1</f7-badge> {{item.name}}
+                                                                                </span>
+                                                                                <span slot="after" class="">
+                                                                                    <f7-badge color="orange"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.baner).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.baner).baner !== ''">
+                                                                                        Банер</f7-badge>
+                                                                                    <f7-badge color="green"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.info).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.info).fill !== ''">
+                                                                                        Инфа</f7-badge>
+                                                                                    <f7-badge color="blue"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.stat).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.stat).fill !== ''">
+                                                                                        Статья</f7-badge>
+                                                                                    <f7-badge color="red"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.action).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.action).fill !== ''">
+                                                                                        Акция</f7-badge>
+                                                                                </span>
+                                                                            </f7-list-item>
+                                                                        </f7-list>
+                                                                    </span>
+                                                                </f7-list-item>
+                                                            </f7-list>
+                                                        </f7-col>
+                                                    </f7-row>
+                                                </f7-tab>
+                                                <!--Таб для статей-->
+                                                <f7-tab id="tab-4" class="">
+                                                    <f7-row>
+                                                        <f7-col width="50" class="upTitulFirm">
+                                                            <f7-label>Добавьте или отредактируйте статью</f7-label>
+                                                            <f7-input type="textarea" :value="FillFirma.stat.fill"
+                                                                autofocus resizable v-on:change="change()"
+                                                                @input="FillFirma.stat.fill = $event.target.value"
+                                                                class="textareaFirm ">
+                                                            </f7-input>
+                                                        </f7-col>
+                                                        <f7-col width="50 upTitulFirm">
+                                                            <span class="padding-left">Статьи в рубриках</span>
+                                                            <f7-list class="FtabFirm">
+                                                                <f7-list-item class="lineFillFirm" :title="itemDiv.name"
+                                                                    v-for="(itemDiv, indexDiv) in Div" :key="itemDiv.id"
+                                                                    :target="itemDiv.id"
+                                                                    v-bind:class="{ lineFillFirm: curIdDiv === itemDiv.id, red: '1' === itemDiv.red,
+                                                        noDisplay: '1' !==  itemDiv.display, hidden: divVis===false && '1' !==  itemDiv.display}">
+                                                                    <span slot="root-end">
+                                                                        <f7-list class="upTitulSub">
+                                                                            <f7-list-item class="lineAllFirm"
+                                                                                v-for="(item, index) in Sub"
+                                                                                :key="item.id"
+                                                                                v-if="item.parent === itemDiv.id && (((firma.red !== undefined && firma.red.indexOf(',' + item.id + ',') !== -1 )
+                                                                        || (firma.black !== undefined  && firma.black.indexOf(',' + item.id + ',') !== -1)
+                                                                        || (firma.prioritet_show !== undefined  && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet !== '' )))"
+                                                                                :target="item.id"
+                                                                                v-bind:class="{ lineAllFirm: curIdSub !== item.id,
+                                                                                          red: (firma.red !== undefined && firma.red.indexOf(',' + item.id + ',') !== -1)
+                                                                                          || (firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1),
+                                                                      noDisplay: '1' !==  item.display, hidden: subVis===false && '1' !==  item.display }"
+                                                                                no-chevron link
+                                                                                v-on:click="SetVsp(item.id, 'paper_show', item.parent)">
+                                                                                <span slot="title" class="">
+                                                                                    <f7-badge color="black"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '46' ">
+                                                                                        5</f7-badge>
+                                                                                    <f7-badge color="red"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '47' ">
+                                                                                        4</f7-badge>
+                                                                                    <f7-badge color="black"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '48'">
+                                                                                        3</f7-badge>
+                                                                                    <f7-badge color="red"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '49' ">
+                                                                                        2</f7-badge>
+                                                                                    <f7-badge color="black"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '50'">
+                                                                                        1</f7-badge> {{item.name}}
+                                                                                </span>
+                                                                                <span slot="after" class="">
+                                                                                    <f7-badge color="orange"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.baner).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.baner).baner !== ''">
+                                                                                        Банер</f7-badge>
+                                                                                    <f7-badge color="green"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.info).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.info).fill !== ''">
+                                                                                        Инфа</f7-badge>
+                                                                                    <f7-badge color="blue"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.stat).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.stat).fill !== ''">
+                                                                                        Статья</f7-badge>
+                                                                                    <f7-badge color="red"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.action).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.action).fill !== ''">
+                                                                                        Акция</f7-badge>
+                                                                                </span>
+                                                                            </f7-list-item>
+                                                                        </f7-list>
+                                                                    </span>
+                                                                </f7-list-item>
+                                                            </f7-list>
+                                                        </f7-col>
+                                                    </f7-row>
+                                                </f7-tab>
+                                                <!--Таб для акций-->
+                                                <f7-tab id="tab-5" class="">
+                                                    <f7-row>
+                                                        <f7-col width="50" class="upTitulFirm">
+                                                            <f7-label>Добавьте или отредактируйте акцию</f7-label>
+                                                            <f7-input type="textarea" :value="FillFirma.action.fill"
+                                                                autofocus resizable v-on:change="change()"
+                                                                @input="FillFirma.action.fill = $event.target.value"
+                                                                class="textareaFirm ">
+                                                            </f7-input>
+                                                        </f7-col>
+                                                        <f7-col width="50 upTitulFirm">
+                                                            <span class="padding-left">Акция в рубриках</span>
+                                                            <f7-list class="FtabFirm">
+                                                                <f7-list-item class="lineFillFirm" :title="itemDiv.name"
+                                                                    v-for="(itemDiv, indexDiv) in Div" :key="itemDiv.id"
+                                                                    :target="itemDiv.id"
+                                                                    v-bind:class="{ lineFillFirm: curIdDiv === itemDiv.id, red: '1' === itemDiv.red,
+                                                        noDisplay: '1' !==  itemDiv.display, hidden: divVis===false && '1' !==  itemDiv.display}">
+                                                                    <span slot="root-end">
+                                                                        <f7-list class="upTitulSub">
+                                                                            <f7-list-item class="lineAllFirm"
+                                                                                v-for="(item, index) in Sub"
+                                                                                :key="item.id"
+                                                                                v-if="item.parent === itemDiv.id && (((firma.red !== undefined && firma.red.indexOf(',' + item.id + ',') !== -1 )
+                                                                        || (firma.black !== undefined  && firma.black.indexOf(',' + item.id + ',') !== -1)
+                                                                        || (firma.prioritet_show !== undefined  && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet !== '' )))"
+                                                                                :target="item.id"
+                                                                                v-bind:class="{ lineAllFirm: curIdSub !== item.id,
+                                                                                          red: (firma.red !== undefined && firma.red.indexOf(',' + item.id + ',') !== -1)
+                                                                                          || (firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1),
+                                                                      noDisplay: '1' !==  item.display, hidden: subVis===false && '1' !==  item.display }"
+                                                                                no-chevron link
+                                                                                v-on:click="SetVsp(item.id, 'act_show', false, item.parent)">
+                                                                                <span slot="title" class="">
+                                                                                    <f7-badge color="black"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '46' ">
+                                                                                        5</f7-badge>
+                                                                                    <f7-badge color="red"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '47' ">
+                                                                                        4</f7-badge>
+                                                                                    <f7-badge color="black"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '48'">
+                                                                                        3</f7-badge>
+                                                                                    <f7-badge color="red"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '49' ">
+                                                                                        2</f7-badge>
+                                                                                    <f7-badge color="black"
+                                                                                        v-if="firma.prioritet_show !== undefined && firma.prioritet_show.indexOf(',' + item.id + ',') !== -1 && firma.prioritet === '50'">
+                                                                                        1</f7-badge>
+                                                                                    {{item.name}}
+                                                                                </span>
+                                                                                <span slot="after" class="">
+                                                                                    <f7-badge color="orange"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.baner).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.baner).baner !== ''">
+                                                                                        Банер</f7-badge>
+                                                                                    <f7-badge color="green"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.info).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.info).fill !== ''">
+                                                                                        Инфа</f7-badge>
+                                                                                    <f7-badge color="blue"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.stat).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.stat).fill !== ''">
+                                                                                        Статья</f7-badge>
+                                                                                    <f7-badge color="red"
+                                                                                        class="size-08"
+                                                                                        v-if="JSON.parse(firma.action).show.indexOf(',' + item.id + ',') !== -1 && JSON.parse(firma.action).fill !== ''">
+                                                                                        Акция</f7-badge>
+                                                                                </span>
+                                                                            </f7-list-item>
+                                                                        </f7-list>
+                                                                    </span>
+                                                                </f7-list-item>
+                                                            </f7-list>
+                                                        </f7-col>
+                                                    </f7-row>
+                                                </f7-tab>
+                                            </f7-tabs>
+                                        </f7-page-content>
+                                    </f7-list-item>
+                                    <f7-list-item class="firmItem ">
+                                        <f7-row class="align-items-start ">
+                                            <f7-col width="70">
+                                                <f7-row class="align-items-center margin-bottom firmItemName2">
+                                                    <f7-col width="50">
+                                                        <f7-label class="blueTitul ">Время работы</f7-label>
+                                                        <f7-input :value="firma.rezhim"
+                                                            @input="firma.rezhim= $event.target.value" type="text"
+                                                            class="lightYellow" placeholder="Введите режим работы">
+                                                        </f7-input>
+                                                    </f7-col>
+                                                    <f7-col class="no-padding no-margin " width="50">
+                                                        <f7-text class="textCopy ">Пример заполнения: <br /> 9ч.-18ч.,
+                                                            обед: 14ч.-15ч., вых: сб, вск <br /> 9ч.-18ч., без обеда,
+                                                            без вых. <br /> 9ч.-18ч., сб: 11ч.-15ч., вых: вск</f7-text>
+                                                    </f7-col>
+                                                </f7-row>
+                                                <f7-row class="">
+                                                    <f7-col width="50" class="firmItemName">
+                                                        <f7-label class="blueTitul ">e-mail</f7-label>
+                                                        <f7-input :value="firma.email"
+                                                            @input="firma.email = $event.target.value" type="text"
+                                                            class="lightYellow" placeholder="Введите e-mail"></f7-input>
+                                                    </f7-col>
+                                                    <f7-col width="40" class="firmItemName">
+                                                        <f7-row class="align-items-center ">
+                                                            <f7-col width="70">
+                                                                <f7-label class="blueTitul ">Сайт</f7-label>
+                                                                <f7-input :value="firma.website"
+                                                                    @input="firma.website = $event.target.value"
+                                                                    type="text" class="lightYellow"
+                                                                    placeholder="Введите сайт"></f7-input>
+                                                            </f7-col>
+                                                            <f7-col width="30">
+                                                                <f7-button :href="firma.website" target="_blank"
+                                                                    external class="AddGrey" small fill round size="18">
+                                                                    Проверить</f7-button>
+                                                            </f7-col>
+                                                        </f7-row>
+                                                    </f7-col>
+                                                </f7-row>
+                                                <!--Карта-->
+                                                <f7-list class="no-margin-top ">
+                                                    <f7-list-item v-for="(item, index) in multAdr" :key="index"
+                                                        class="minPadLeft ">
+                                                        <f7-row class="align-items-center adress ">
+                                                            <f7-col width="85">
+                                                                <f7-row>
+                                                                    <f7-col width="20">
+                                                                        <f7-label class="blueTitul ">Город</f7-label>
+                                                                        <f7-input :value="item.city"
+                                                                            @input="item.city= $event.target.value"
+                                                                            type="text" class="lightYellow"></f7-input>
+                                                                    </f7-col>
+                                                                    <f7-col width="50">
+                                                                        <f7-label class="blueTitul ">Адрес</f7-label>
+                                                                        <f7-input :value="item.adres"
+                                                                            @input="item.adres= $event.target.value"
+                                                                            type="text" class="lightYellow"></f7-input>
+                                                                    </f7-col>
+                                                                    <f7-col width="15">
+                                                                        <f7-label class="blueTitul ">longitude
+                                                                        </f7-label>
+                                                                        <f7-input :value="item.long" disabled
+                                                                            @input="item.long = $event.target.value"
+                                                                            type="text"></f7-input>
+                                                                    </f7-col>
+                                                                    <f7-col width="15">
+                                                                        <f7-label class="blueTitul ">latitude</f7-label>
+                                                                        <f7-input :value="item.latid" disabled
+                                                                            @input="item.latid = $event.target.value"
+                                                                            type="text"></f7-input>
+                                                                    </f7-col>
+                                                                </f7-row>
+                                                                <!--Телефоны-->
+                                                                <f7-row class="align-items-center padding-top">
+                                                                    <f7-col width="33">
+                                                                        <f7-label class="blueTitul ">Телефон 1
+                                                                        </f7-label>
+                                                                        <f7-input :value="item.tel1"
+                                                                            @input="item.tel1 = $event.target.value"
+                                                                            type="text" class="lightYellow"
+                                                                            placeholder="Введите 1 телефон"></f7-input>
+                                                                        <f7-input :value="item.dop1"
+                                                                            @input="item.dop1 = $event.target.value"
+                                                                            type="text" class="lightYellow"
+                                                                            placeholder="Введите описание"></f7-input>
+                                                                        <f7-list-item checkbox
+                                                                            @change="item.what1 = $event.target.checked"
+                                                                            color="black" :checked="item.what1">
+                                                                            <span
+                                                                                class="title prLeft black">whatsapp</span>
+                                                                        </f7-list-item>
+                                                                    </f7-col>
+                                                                    <f7-col width="33">
+                                                                        <f7-label class="blueTitul ">Телефон 2
+                                                                        </f7-label>
+                                                                        <f7-input :value="item.tel2"
+                                                                            @input="item.tel2 = $event.target.value"
+                                                                            type="text" class="lightYellow"
+                                                                            placeholder="Введите 2 телефон"></f7-input>
+                                                                        <f7-input :value="item.dop2"
+                                                                            @input="item.dop2 = $event.target.value"
+                                                                            type="text" class="lightYellow"
+                                                                            placeholder="Введите описание"></f7-input>
+                                                                        <f7-list-item checkbox
+                                                                            @change="item.what2 = $event.target.checked"
+                                                                            color="black" :checked="item.what2">
+                                                                            <span
+                                                                                class="title prLeft black">whatsapp</span>
+                                                                        </f7-list-item>
+                                                                    </f7-col>
+                                                                    <f7-col width="33">
+                                                                        <f7-label class="blueTitul ">Телефон 3
+                                                                        </f7-label>
+                                                                        <f7-input :value="item.tel3"
+                                                                            @input="item.tel3 = $event.target.value"
+                                                                            type="text" class="lightYellow"
+                                                                            placeholder="Введите 3 телефон"></f7-input>
+                                                                        <f7-input :value="item.dop3"
+                                                                            @input="item.dop3 = $event.target.value"
+                                                                            type="text" class="lightYellow"
+                                                                            placeholder="Введите описание"></f7-input>
+                                                                        <f7-list-item checkbox
+                                                                            @change="item.what3 = $event.target.checked"
+                                                                            color="black" :checked="item.what3">
+                                                                            <span
+                                                                                class="title prLeft black">whatsapp</span>
+                                                                        </f7-list-item>
+                                                                    </f7-col>
+                                                                </f7-row>
+                                                            </f7-col>
+                                                            <f7-col width="15" class="">
+                                                                <f7-button v-on:click="mapSee(index)" small fill round
+                                                                    size="18" class="AddGrey margin-bottom">Заполнить
+                                                                </f7-button>
+                                                                <f7-button v-on:click="mapAdd()"
+                                                                    v-if="index === multAdr.length-1" small fill round
+                                                                    size="18" class="AddGrey margin-bottom">Добавить
+                                                                </f7-button>
+                                                                <f7-button v-on:click="mapDel(index)" small fill round
+                                                                    size="18" class="AddGrey margin-bottom">Удалить
+                                                                </f7-button>
+                                                            </f7-col>
+                                                        </f7-row>
+                                                    </f7-list-item>
+                                                </f7-list>
+                                            </f7-col>
+                                            <f7-col width="30">
+                                                <div id="map" style="height: 300px"></div>
+                                            </f7-col>
+                                        </f7-row>
+                                    </f7-list-item>
+                                </f7-list>
+                            </f7-block>
+                        </f7-page>
+                    </f7-popup>
+
+                    <!--Окно для изменения позиции банеров-->
+                    <f7-popup class="baner-popup" style="outline: 1px solid white">
+                        <f7-page id="ret">
+                            <f7-navbar title="Позиции банеров на главном" id="titSub" class="AddGrey">
+                                <f7-nav-right>
+                                    <f7-link popup-close>
+                                        <div class="butForm ">Назад</div>
+                                    </f7-link>
+                                    <f7-link id="saveSub" v-on:click="saveBun()">
+                                        <div class="butForm">Сохранить</div>
+                                    </f7-link>
+                                </f7-nav-right>
+                            </f7-navbar>
+                            <f7-block>
+                                <f7-row>
+                                    <f7-col width="30">
+                                        <f7-link class="black butMain " v-if="sortableBan !== 'Закончить изменения'"
+                                            sortable-toggle=".sortableBan" v-on:click="SortBan">{{sortableBan}}
+                                        </f7-link>
+                                        <f7-link class="black butMain" v-if="sortableBan === 'Закончить изменения'"
+                                            sortable-toggle=".sortableBan" v-on:click="SortBan">{{sortableBan}}
+                                        </f7-link>
+                                    </f7-col>
+                                    <f7-col width="30">
+                                    </f7-col>
+                                </f7-row>
+                                <f7-list class="Ftab sortableBan " sortable @sortable:sort="onSortBan">
+                                    <f7-list-item class="lineAll " v-for="(item, index) in mainBan" :key="item.id"
+                                        :target="item.id">
+                                        <span slot="after"
+                                            v-bind:class="{myFab3: sortableBan === 'Закончить изменения'}">
+                                            {{item.name}}
+                                            <f7-link v-on:click="delBan(index)"><i
+                                                    class="margin-left icon f7-icons color-red">close_round_fill</i>
+                                            </f7-link>
+                                        </span>
+                                        <span slot="footer" v-html="item.banerMain"></span>
+                                    </f7-list-item>
+                                </f7-list>
+                            </f7-block>
+                        </f7-page>
+                    </f7-popup>
+                    <!--Кнопочное меню при нажатие на подрубрику для добавления дополнительных функций -->
+                    <f7-popover class="popover-menu addVsp ">
+                        <f7-list class="text-align-right">
+                            <f7-list-item popover-close class="" scrolling="no">
+                                <f7-link popover-close class="butSubFirma no-padding no-margin redback"
+                                    v-on:click="vsp(1, subFirmaId, false)" title="Добавить дополнительные данные">>
+                                </f7-link>
+                            </f7-list-item>
+                        </f7-list>
+                    </f7-popover>
+                    <!--Кнопочное меню при нажатие на подрубрику для удаления дополнительных функций -->
+                    <f7-popover class="popover-menu delVsp ">
+                        <f7-list class="text-align-right">
+                            <f7-list-item popover-close class="" scrolling="no">
+                                <f7-link popover-close class="butSubFirma no-padding no-margin redback"
+                                    v-on:click="vsp(1, subFirmaId, true)" title="Добавить дополнительные данные">
+                                    &lt; </f7-link>
+                            </f7-list-item>
+                        </f7-list>
+                    </f7-popover>
+                    <!--Кнопочное меню при нажатие на подрубрику для добавления приоритета  -->
+                    <f7-popover class="popover-menu addSubFirma ">
+                        <f7-list class="">
+                            <f7-list-item popover-close class="float-right" scrolling="no">
+                                <f7-link popover-close class="butSubFirma no-padding no-margin redback"
+                                    v-on:click="up(0, subFirmaId, true)" title="Убрать фирму с этой рубрики"
+                                    v-if="subFirma !== 0">
+                                    &lt; </f7-link>
+                                <f7-link popover-close class="butSubFirma no-padding no-margin blackback"
+                                    v-on:click="up(5, subFirmaId, false)" title="Сделать фирму с приоритетом 5"
+                                    v-if="subFirma !== 5 && subFirma === 0">5</f7-link>
+                                <f7-link popover-close class="butSubFirma no-padding no-margin redback"
+                                    v-on:click="up(4, subFirmaId, false)" title="Сделать фирму с приоритетом 4"
+                                    v-if="subFirma !== 4 && subFirma === 0">4</f7-link>
+                                <f7-link popover-close class="butSubFirma no-padding no-margin blackback"
+                                    v-on:click="up(3, subFirmaId, false)" title="Сделать фирму с приоритетом 3"
+                                    v-if="subFirma !== 3 && subFirma === 0">3</f7-link>
+                                <f7-link popover-close class="butSubFirma no-padding no-margin redback"
+                                    v-on:click="up(2, subFirmaId, false)" title="Сделать фирму с приоритетом 2"
+                                    v-if="subFirma !== 2 && subFirma === 0">2</f7-link>
+                                <f7-link popover-close class="butSubFirma no-padding no-margin blackback"
+                                    v-on:click="up(1, subFirmaId, false)" title="Сделать фирму с приоритетом 1"
+                                    v-if="subFirma !== 1 && subFirma === 0">1</f7-link>
+                                <f7-link popover-close class="butSubFirma no-padding no-margin redback"
+                                    v-on:click="up(6, subFirmaId, false)" title="Сделать фирму красной строчкой"
+                                    v-if="subFirma !== 6 && subFirma === 0">+</f7-link>
+                                <f7-link popover-close class="butSubFirma no-padding no-margin blackback"
+                                    v-on:click="up(7, subFirmaId, false)" title="Сделать фирму чёрной строчкой"
+                                    v-if="subFirma !== 7 && subFirma === 0">+</f7-link>
+                            </f7-list-item>
+                        </f7-list>
+                    </f7-popover>
+                    <!--Кнопочное меню при нажатие на подрубрику для удаления или смены приоритета -->
+                    <f7-popover class="popover-menu delSubFirma">
+                        <f7-list class="text-align-right">
+                            <f7-list-item popover-close class="" scrolling="no">
+                                <f7-link popover-close class="butSubFirma no-padding no-margin redback"
+                                    v-on:click="up(0, subFirmaId, true)" title="Убрать фирму с этой рубрики">
+                                    &lt;</f7-link>
+                                <f7-link popover-close class="butSubFirma no-padding no-margin blackback"
+                                    v-on:click="up(5, subFirmaId, true)" title="Сделать фирму с приоритетом 5"
+                                    v-if="subFirma !== 1">5</f7-link>
+                                <f7-link popover-close class="butSubFirma no-padding no-margin redback"
+                                    v-on:click="up(4, subFirmaId, true)" title="Сделать фирму с приоритетом 4"
+                                    v-if="subFirma !== 2">4</f7-link>
+                                <f7-link popover-close class="butSubFirma no-padding no-margin blackback"
+                                    v-on:click="up(3, subFirmaId, true)" title="Сделать фирму с приоритетом 3"
+                                    v-if="subFirma !== 3">3</f7-link>
+                                <f7-link popover-close class="butSubFirma no-padding no-margin redback"
+                                    v-on:click="up(2, subFirmaId, true)" title="Сделать фирму с приоритетом 2"
+                                    v-if="subFirma !== 4">2</f7-link>
+                                <f7-link popover-close class="butSubFirma no-padding no-margin blackback"
+                                    v-on:click="up(1, subFirmaId, true)" title="Сделать фирму с приоритетом 1"
+                                    v-if="subFirma !== 5">1</f7-link>
+                                <f7-link popover-close class="butSubFirma no-padding no-margin redback"
+                                    v-on:click="up(6, subFirmaId, true)" title="Сделать фирму красной строчкой"
+                                    v-if="subFirma !== 6">+</f7-link>
+                                <f7-link popover-close class="butSubFirma no-padding no-margin blackback"
+                                    v-on:click="up(7, subFirmaId, true)" title="Сделать фирму чёрной строчкой"
+                                    v-if="subFirma !== 7">+</f7-link>
+                            </f7-list-item>
+                        </f7-list>
+                    </f7-popover>
+                </f7-page>
+            </f7-view>
+        </f7-app>
+    </div>
+
+    <script src="js/vue.min.js"></script>
+    <script src="js/framework7.bundle.min.js"></script>
+    <script src="js/framework7-vue.bundle.min.js"></script>
+    <script src="js/VueApp.js"></script>
+    <script src="js/BaseApp.js"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=e699252d-1879-4e01-8583-00ad94cdef76"
+    type="text/javascript"></script>
+</body>
+
+</html>

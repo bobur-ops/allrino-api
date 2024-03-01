@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="ru" class="wide wow-animation">
+<head>
+    <!-- Site Title-->
+    <title>Админка Автосправка</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <!-- Stylesheets-->
+    <link href="css/framework7.bundle.min.css" rel="stylesheet" />
+    <link href="css/framework7-icons.css" rel="stylesheet" />
+    <link href="css/work.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="page no-navbar no-toolbar no-swipeback">
+        <div class="page-content login-screen-content">
+            <div class="login-screen-title">Вход в админку</div>
+            <form>
+                <div class="list">
+                    <ul>
+                        <li class="item-content item-input">
+                            <div class="item-inner">
+                                <div class="item-title item-label">Логин</div>
+                                <div class="item-input-wrap">
+                                    <input type="text" name="username" placeholder="Логин" id="login">
+                                    <span class="input-clear-button"></span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="item-content item-input">
+                            <div class="item-inner">
+                                <div class="item-title item-label">Пароль</div>
+                                <div class="item-input-wrap">
+                                    <input type="password" name="password" placeholder="Пароль" id="pass">
+                                    <span class="input-clear-button"></span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <ul>
+                        <li>
+                            <a href="#" class="item-link button button-fill" id="enter">Ввод</a>
+                        </li>
+                    </ul>
+                    <div class="block-footer info"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+  
+    <script src="js/vue.min.js"></script>
+    <script src="js/framework7.bundle.min.js"></script>
+    <script src="js/framework7-vue.bundle.min.js"></script>
+    <script src="js/VueApp.js"></script>
+    <script src="js/work.js"></script>
+</body>
+</html>

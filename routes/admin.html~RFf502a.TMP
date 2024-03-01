@@ -1,0 +1,313 @@
+﻿<!DOCTYPE html>
+<html lang="ru" class="wide wow-animation">
+<head>
+    <!-- Site Title-->
+    <title>Админка Автосправка</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- Color theme for statusbar -->
+    <meta name="theme-color" content="red">
+    <!--<link rel="icon" href="images/favicon.ico" type="image/x-icon">-->
+    <link href="css/framework7.min.css" rel="stylesheet" />
+    <!-- Stylesheets-->
+    <link href="css/framework7-icons.css" rel="stylesheet" />
+    <link href="css/work.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- App Root Element -->
+    <div id="app">
+        <!-- Main Framework7 App component where we pass Framework7 params -->
+        <f7-app :params="$root.f7params">
+            <!-- Left Panel with Reveal effect -->
+            <f7-panel left theme-dark>
+                <f7-view>
+                    <f7-page>
+                        <f7-block>Меню</f7-block>
+                        <!--<f7-button v-on:click="clickBase()">База данных</f7-button>-->
+                        <f7-button v-on:click="clickExcel()">Выгрузка в Excel</f7-button>
+                        <div></div>
+                        <f7-link href="http://autogie1.bget.ru/redbok.xlsx" external>excel</f7-link>
+                        <f7-link href="http://autogie1.bget.ru/autospravka.xlsx" external>autospravka.xlsx</f7-link>
+</f7-view>
+            </f7-panel>
+
+            <!-- Right Panel with Cover effect and dark layout theme -->
+            <f7-panel right reveal class="rightPan">
+                <f7-view>
+                    <f7-page>
+                        <f7-block>Вспомогательная панель</f7-block>
+                        <f7-block>{{firma.name}}</f7-block>
+</f7-view>
+            </f7-panel>
+            <f7-statusbar></f7-statusbar>
+            <f7-view main>
+                <!-- Initial Page -->
+                <f7-page class="fonAll ">
+                    <f7-toolbar color="red">
+                        <f7-row class="text-align-center no-gap">
+                            <f7-button raised panel-open="left" class="butMenu"><f7-icon f7="bars"></f7-icon></f7-button>
+                            <f7-col width="20" class="Uptab">Работа с разделами</f7-col>
+                            <f7-col width="25" class="Uptab">Работа с подразделами</f7-col>
+                            <f7-col width="20" class="Uptab">Работа с фирмами</f7-col>
+                            <f7-col width="20" class="Uptab">Работа с фирмой</f7-col>
+                            <f7-col width="5" class="Uptab">
+                                <f7-button raised panel-open="right"></f7-button>
+                            </f7-col>
+                        </f7-row>
+                    </f7-toolbar>
+                    <f7-block>
+                        <f7-row class="text-align-left no-margin no-gap">
+                            <!--Отдел разделов-->
+                            <f7-col width="20" class="upTitul">
+                                <f7-link class="addRaz" v-on:click="addDiv(true)"><f7-icon f7="add_round_fill"></f7-icon><span class="padding-left">Добавить раздел</span></f7-link>
+                                <div class="row">
+                                    <f7-col width="80" class=" "><f7-link class="addRaz" sortable-toggle=".sortable" v-on:click="SortDiv">{{sortable}}</f7-link></f7-col>
+                                    <f7-col width="20"><f7-link class="addRaz addRaz2" v-on:click="DivVis" v-bind:class="{addRaz3: !divVis}"><f7-icon f7="eye_fill"></f7-icon></f7-col>
+                                </div>
+                                <f7-list class="Ftab" sortable @sortable:sort="onSortDiv">
+                                    <f7-list-item class="lineAll" :title="item.name" v-for="(item, index) in Div" :key="item.id"
+                                                  :target="item.id" v-on:click="setDiv(item.id, index)"
+                                                  v-bind:class="{ lineAll: curDiv !== item.id, lineFill: curDiv === item.id,
+                                      red: '1' === item.red, noDisplay: '1' !==  item.display, hidden: divVis===false && '1' !==  item.display}">
+                                        <span slot="after">
+                                            <f7-fab position="right-center" slot="fixed" color="blue" class="myFab" v-bind:class="{myFab2: sortable==='Закончить изменения позиций'}">
+                                                <f7-icon f7="menu" title="Меню"></f7-icon>
+                                                <f7-icon f7="close"></f7-icon>
+                                                <f7-fab-buttons position="left">
+                                                    <f7-fab-button v-on:click="editDiv(index, item.id)" fab-close title="Редактировать"><f7-icon f7="compose"></f7-icon></f7-fab-button>
+                                                    <f7-fab-button v-on:click="delDiv(index, item.id)" fab-close title="Удалить"><f7-icon f7="trash"></f7-icon></f7-fab-button>
+                                                    <f7-fab-button v-on:click="redDiv(index, item.id)" fab-close title="Красный цвет"><f7-icon f7="circle_fill" v-bind:class="{ red: item.red !== '1'}"></f7-icon></f7-fab-button>
+                                                    <f7-fab-button v-on:click="disDiv(index, item.id)" fab-close title="Видимость"><f7-icon f7="eye_fill" v-bind:class="{ black: item.pos === '1'}"></f7-icon></f7-fab-button>
+                                                </f7-fab-buttons>
+                                            </f7-fab>
+                                        </span>
+                                    </f7-list-item>
+                                </f7-list>
+                            </f7-col>
+                            <!--Отдел подразделов-->
+                            <f7-col width="25" class="upTitul">
+                                <f7-link class="addRaz" v-on:click="addFirm()"><f7-icon f7="add_round_fill"></f7-icon><span class="padding-left">Добавить подраздел</span></f7-link>
+                                <div class="row">
+                                    <f7-col width="80" class=" "><f7-link class="addRaz" sortable-toggle=".sortable" v-on:click="SortSub">{{sortableSub}}</f7-link></f7-col>
+                                    <f7-col width="20"><f7-link class="addRaz addRaz2" v-on:click="SubVis" v-bind:class="{addRaz3: !subVis}"><f7-icon f7="eye_fill"></f7-icon></f7-col>
+                                </div>
+                                <f7-list class="Ftab" sortable @sortable:sort="onSortSub">
+                                    <f7-list-item class="lineAll" :title="item.name" v-for="(item, index) in Sub" :key="item.id" v-if="item.parent === myVue.curDiv "
+                                                  :target="item.id" v-on:click="setSub(item.id, index)"
+                                                  v-bind:class="{ lineAll: curSub !== item.id, lineFill: curSub === item.id,
+                                      red: '1' === item.red, noDisplay: '1' !==  item.display, hidden: subVis===false && '1' !==  item.display}">
+                                        <span slot="after">
+                                            <f7-fab position="right-center" slot="fixed" color="blue" class="myFab" v-bind:class="{myFab2: sortableSub==='Закончить изменения позиций'}">
+                                                <f7-icon f7="menu" title="Меню"></f7-icon>
+                                                <f7-icon f7="close"></f7-icon>
+                                                <f7-fab-buttons position="left">
+                                                    <f7-fab-button v-on:click="editSub(index, item.id)" fab-close title="Редактировать"><f7-icon f7="compose"></f7-icon></f7-fab-button>
+                                                    <f7-fab-button v-on:click="delSub(index, item.id)" fab-close title="Удалить"><f7-icon f7="trash"></f7-icon></f7-fab-button>
+                                                    <f7-fab-button v-on:click="redSub(index, item.id)" fab-close title="Красный цвет"><f7-icon f7="circle_fill" v-bind:class="{ red: item.red !== '1'}"></f7-icon></f7-fab-button>
+                                                    <f7-fab-button v-on:click="disSub(index, item.id)" fab-close title="Видимость"><f7-icon f7="eye_fill" v-bind:class="{ black: item.pos === '1'}"></f7-icon></f7-fab-button>
+                                                </f7-fab-buttons>
+                                            </f7-fab>
+                                        </span>
+                                    </f7-list-item>
+                                </f7-list>
+                            </f7-col>
+
+                            <!--Отдел фирм-->
+                            <f7-col width="25" class="upTitul">
+                                <f7-link class="addRaz" v-on:click="addFirma(curSub)"><f7-icon f7="add_round_fill"></f7-icon><span class="padding-left">Добавить фирму</span></f7-link>
+                                <f7-searchbar search-container=".search-list" placeholder="Поиск"
+                                              search-in=".item-title"></f7-searchbar>
+                                <f7-list class="searchbar-not-found">
+                                    <f7-list-item title="Нет подходящих фирм"></f7-list-item>
+                                </f7-list>
+                                <f7-list class="Ftab search-list searchbar-found">
+                                    <f7-list-item class="lineAll" v-for="(item, index) in firmsSub" :key="item.id"
+                                                  no-chevron link popover-open=".popover-menu" :target="item.id"
+                                                  v-on:click="setFirma(item.id, index)"
+                                                  :footer="item.address +', т.:'+item.phones"
+                                                  v-bind:class="{ red: item.red.indexOf(',' + curSub + ',') !== -1, noDisplay: '1' !==  item.display}">
+                                        <span slot="title" class="">
+                                            <f7-badge color="red" v-if="item.prioritet_show.indexOf(',' + curSub + ',') !== -1 && item.prioritet === '48' ">1</f7-badge>
+                                            <f7-badge color="red" v-if="item.prioritet_show.indexOf(',' + curSub + ',') !== -1 && item.prioritet === '49' ">2</f7-badge>
+                                            <f7-badge color="black" v-if="item.prioritet_show.indexOf(',' + curSub + ',') !== -1 && item.prioritet === '50'">3</f7-badge>
+                                            {{item.name}}
+                                        </span>
+                                        <span slot="title" class="after">
+                                            {{Vids[item.vid].name}}
+                                            <f7-badge color="red" v-if="item.action !== ''  && item.action !== null ">Aкция</f7-badge>
+                                            <f7-badge color="green" v-if="item.info !== ''  && item.info !== null && item.info_show.indexOf(',' + curSub + ',') !== -1">Инфа</f7-badge>
+                                            <f7-badge color="blue" v-if="item.stat !== ''  && item.stat !== null && item.paper_show.indexOf(',' + curSub + ',') !== -1">Статья</f7-badge>
+                                        </span>
+                                    </f7-list-item>
+                                </f7-list>
+                            </f7-col>
+                            <!--Фирмы-->
+                            <f7-col width="25" class="upTitul" id="firms">
+                                <f7-link class="addRaz" v-on:click="addFirma(-1)"><f7-icon f7="add_round_fill"></f7-icon><span class="padding-left">Добавить фирму</span></f7-link>
+                                <f7-searchbar search-container=".search-list2" placeholder="Поиск"
+                                              search-in=".item-title"></f7-searchbar>
+                                <f7-list class="searchbar-not-found">
+                                    <f7-list-item title="Нет подходящих фирм"></f7-list-item>
+                                </f7-list>
+                                <f7-list class="Ftab search-list2 searchbar-found">
+                                    <f7-list-item class="lineAll" :title="item.name" v-for="(item, index) in Firms" :key="item.id"
+                                                  v-on:click="setFirma(item.id, index)"
+                                                  no-chevron link popover-open=".popover-menu"
+                                                  :footer="item.address +', т.:'+item.phones" 
+                                                  :target="item.id" 
+                                                  v-bind:class="{ noDisplay: '1' !==  item.display}">
+                                    </f7-list-item>
+                                </f7-list>
+                            </f7-col>
+                        </f7-row>
+                    </f7-block>
+                    <f7-popover class="popover-menu popFirma ">
+                        <f7-list class="text-align-right">
+                            <f7-list-item popover-close class="closeFirma" scrolling="no">
+                                <f7-link popover-close class="butFirma no-padding no-margin" v-on:click="editFirma()"><f7-icon size="22" f7="compose" class="no-padding no-margin" color="white"></f7-icon></f7-link>
+                                <f7-link popover-close class="butFirma no-padding no-margin" v-on:click="deleteFirma()"><f7-icon size="22" f7="trash" class="no-padding no-margin" color="white"></f7-icon></f7-link>
+                            </f7-list-item>
+                        </f7-list>
+                    </f7-popover>
+                    <!--Окно для добавления или изменения раздела-->
+                    <f7-popup class="Div-popup">
+                        <f7-page id="ret">
+                            <f7-navbar :title="titulDiv" id="titDiv">
+                                <f7-nav-right>
+                                    <f7-link id="saveDiv" v-on:click="saveDiv()">Сохранить</f7-link>
+                                    <f7-link popup-close v-on:click="closeDiv()">Закрыть</f7-link>
+                                </f7-nav-right>
+                            </f7-navbar>
+                            <f7-block>
+                                <f7-list>
+                                    <f7-list-item>
+                                        <f7-label>Название раздела</f7-label>
+                                        <f7-input id="nameDiv" :value="carDiv.name" @input="carDiv.name = $event.target.value" type="text" autofocus class="lightYellow" placeholder="Введите название" info='Обязаетльное поле' required validate clear-button></f7-input>
+                                    </f7-list-item>
+                                    <f7-list-item>
+                                        <f7-row class="align-items-center">
+                                            <f7-col width="30">Цвет</f7-col>
+                                            <f7-col width="35"><f7-list-item radio @change="carDiv.red = $event.target.value" :checked="carDiv.red === '0'" value="0" name="red" title="Черный"></f7-list-item></f7-col>
+                                            <f7-col width="35"><f7-list-item radio @change="carDiv.red = $event.target.value" :checked="carDiv.red === '1'" value="1" name="red" title="Красный"></f7-list-item></f7-col>
+                                        </f7-row>
+                                    </f7-list-item>
+                                    <f7-list-item>
+                                        <f7-row class="align-items-center">
+                                            <f7-col width="30">Видимость</f7-col>
+                                            <f7-col width="35"><f7-list-item radio @change="carDiv.display = $event.target.value" :checked="carDiv.display === '1'" value="1" name="display" title="Отображать"></f7-list-item></f7-col>
+                                            <f7-col width="35"><f7-list-item radio @change="carDiv.display = $event.target.value" :checked="carDiv.display === '0'" value="0" name="display" title="Скрывать"></f7-list-item></f7-col>
+                                        </f7-row>
+                                    </f7-list-item>
+                                    <f7-list-item>
+                                        <f7-item>Здесь можете добавить дополнительную информацию</f7-item>
+                                        <f7-input class="lightYellow" :value="carDiv.info" @input="carDiv.info = $event.target.value" type="textarea" placeholder="Запись"></f7-input>
+                                        <f7-item>Время последнего редактирования: </f7-item><span>{{carDiv.last_edit}}</span>
+                                        <f7-itm id="infoDiv" class="red"></f7-itm>
+                                    </f7-list-item>
+                                    <f7-list>
+                            </f7-block>
+                        </f7-page>
+                    </f7-popup>
+                    <!--Окно для добавления или изменения подраздела-->
+                    <f7-popup class="Sub-popup">
+                        <f7-page id="ret">
+                            <f7-navbar :title="titulSub" id="titSub">
+                                <f7-nav-right>
+                                    <f7-link id="saveDiv" v-on:click="saveSub()">Сохранить</f7-link>
+                                    <f7-link popup-close v-on:click="closeSub()">Закрыть</f7-link>
+                                </f7-nav-right>
+                            </f7-navbar>
+                            <f7-block>
+                                <f7-list>
+                                    <f7-list-item>
+                                        <f7-label>Название раздела</f7-label>
+                                        <f7-input id="nameSub" :value="carSub.name" @input="carSub.name = $event.target.value" type="text" autofocus class="lightYellow" placeholder="Введите название" info='Обязаетльное поле' required validate clear-button></f7-input>
+                                    </f7-list-item>
+                                    <f7-list-item>
+                                        <f7-row class="align-items-center">
+                                            <f7-col width="30">Цвет</f7-col>
+                                            <f7-col width="35"><f7-list-item radio @change="carSub.red = $event.target.value" :checked="carSub.red === '0'" value="0" name="carred" title="Черный"></f7-list-item></f7-col>
+                                            <f7-col width="35"><f7-list-item radio @change="carSub.red = $event.target.value" :checked="carSub.red === '1'" value="1" name="carred" title="Красный"></f7-list-item></f7-col>
+                                        </f7-row>
+                                    </f7-list-item>
+                                    <f7-list-item>
+                                        <f7-row class="align-items-center">
+                                            <f7-col width="30">Видимость</f7-col>
+                                            <!-- Additional "radio" prop to enable radio list item -->
+                                            <f7-col width="35"><f7-list-item radio @change="carSub.display = $event.target.value" :checked="carSub.display === '1'" value="1" name="cardisplay" title="Отображать"></f7-list-item></f7-col>
+                                            <f7-col width="35"><f7-list-item radio @change="carSub.display = $event.target.value" :checked="carSub.display === '0'" value="0" name="cardisplay" title="Скрывать"></f7-list-item></f7-col>
+                                        </f7-row>
+                                    </f7-list-item>
+                                    <f7-list-item>
+                                        <f7-item>Здесь можете добавить дополнительную информацию</f7-item>
+                                        <f7-input class="lightYellow" :value="carSub.info" @input="carSub.info = $event.target.value" type="textarea" placeholder="Запись"></f7-input>
+                                        <f7-item>Время последнего редактирования: </f7-item><span>{{carDiv.last_edit}}</span>
+                                        <f7-itm id="infoSub" class="red"></f7-itm>
+                                    </f7-list-item>
+                                    <f7-list>
+                            </f7-block>
+                        </f7-page>
+                    </f7-popup>
+
+                    <!--Окно для добавления или изменения фирмы-->
+                    <f7-popup class="firma-popup">
+                        <f7-page id="ret">
+                            <f7-navbar :title="titulFirma" id="titFirma">
+                                <f7-nav-right>
+                                    <f7-link id="saveFirma" v-on:click="saveFirma()">Сохранить</f7-link>
+                                    <f7-link popup-close v-on:click="closeFirma()">Закрыть</f7-link>
+                                </f7-nav-right>
+                            </f7-navbar>
+                            <f7-block>
+                                <f7-list>
+                                    <f7-list-item>
+                                        <f7-label>Название раздела</f7-label>
+                                        <f7-input id="nameFirma" :value="firma.name" @input="firma.name = $event.target.value" type="text" autofocus class="lightYellow" placeholder="Введите название" info='Обязаетльное поле' required validate clear-button></f7-input>
+                                    </f7-list-item>
+                                    <f7-list-item>
+                                        <f7-row class="align-items-center">
+                                            
+                                        </f7-row>
+                                    </f7-list-item>
+                                    <f7-list-item>
+                                        <f7-row class="align-items-center">
+                                            <f7-col width="30">Видимость</f7-col>
+                                            <!-- Additional "radio" prop to enable radio list item -->
+                                            <f7-col width="35"><f7-list-item radio @change="firma.display = $event.target.value" :checked="firma.display === '1'" value="1" name="display" title="Отображать"></f7-list-item></f7-col>
+                                            <f7-col width="35"><f7-list-item radio @change="firma.display = $event.target.value" :checked="firma.display === '0'" value="0" name="display" title="Скрывать"></f7-list-item></f7-col>
+                                        </f7-row>
+                                    </f7-list-item>
+                                    <f7-list-item>
+                                        <f7-item>Здесь можете добавить дополнительную информацию</f7-item>
+                                        <f7-input class="lightYellow" :value="firma.info" @input="firma.info = $event.target.value" type="textarea" placeholder="Запись"></f7-input>
+                                        <f7-item>Время последнего редактирования: </f7-item><span>{{firma.last_edit}}</span>
+                                        <f7-itm id="infoFirma" class="red"></f7-itm>
+                                    </f7-list-item>
+                                    <f7-list>
+                            </f7-block>
+                        </f7-page>
+                    </f7-popup>
+                </f7-page>
+            </f7-view>
+        </f7-app>
+    </div>
+    <!--<f7-navbar title="My App">
+        <div>Работа с разделами</div>
+        <div>Работа с подразделами</div>
+        <div>Работа с фирмами</div>
+        <div>Работа с фирмой</div>
+    </f7-navbar>-->
+
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/vue.min.js"></script>
+    <script src="js/framework7.min.js"></script>
+    <script src="js/framework7-vue.min.js"></script>
+    <!--<script src="js/FileSaver.min.js"></script>-->
+    <script src="js/VueApp.js"></script>
+    <script src="js/BaseApp.js"></script>
+    <script src="js/work.js"></script>
+</body>
+</html>

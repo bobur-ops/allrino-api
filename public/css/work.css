@@ -1,0 +1,690 @@
+﻿body {
+    background: white;
+    font-size: 0.8em;
+ }
+ 
+.textApp {
+    font-size: 1.1em;
+    margin-top: 3vh;
+    margin-bottom: 3vh;
+    text-align: center;
+    margin-left: 3vw;
+    margin-right: 3vw;
+}
+
+.imgLink2 {
+    width:  70vw !important;
+}
+.bod {
+    opacity: 0;
+}
+.tab-link-active {
+    color: white !important;
+}
+:root {
+    --f7-preloader-modal-bg-color: rgba(0, 0, 0, 1);
+
+}
+.sortable-handler {
+    height: 18px !important;
+    width: 18px !important;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+        
+}
+.dialog-backdrop {
+    background: rgba(0,0,0,0);
+}
+
+/*Общий фон для админки */
+.fonAll {
+    /*background: url('../images/oboi.jpg') no-repeat center center !important;*/
+    min-height: 100%;
+    background-size: cover !important;
+    }
+.border {
+    border-bottom: 1px solid #909090;
+    width: 92% !important;
+    margin-left: 8px !important;
+}
+.textCopy {
+    padding: 10px;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    -khtml-user-select: text;
+    -webkit-user-select: text;
+    user-select: text;
+    font-size: 0.8em;
+    }
+/*кнопки на входе */
+button, #login, #pass {
+    margin-top: 20px;
+}
+/*Кнопка для левого меню */
+.butAbs, .butAbsRight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #444343;
+    z-index: 1000;
+}
+
+/*Кнопка для правого меню */
+.butAbsRight {
+    top: 40px;
+    width: 40px;
+    background: #cccaca;
+    color: black;
+}
+    .butAbsRight:hover {
+        width: 90px !important;
+    }
+.butAbsFlash, .butAbsRight {
+    animation: animeBG 2s;
+    animation-iteration-count: infinite;
+    }
+@keyframes animeBG {
+    0% {background: #cccaca;}
+    25% {background: red;}
+    50% {background: #cccaca;}
+    75% {background: red;}
+    100% {background: #cccaca;}
+}
+
+/*темно-серый цвет */
+.AddGrey {
+    background: #444343 !important;
+    }
+.AddGrey  .title, .AddGrey  .icon, .AddGrey  .icon-only {
+    color: black !important;
+}
+.addRaz  .icon {
+    color: white !important;
+}
+
+
+/*поле фильтра*/
+.vybor {
+    margin: 8px 0 !important;
+    background: white;
+    font-weight: 700;
+    height: auto !important;
+    }
+.smart-select-popover .popover-inner {
+    max-height: 70vh;
+}
+    .under, .underGr {
+    border-bottom: 1px solid black;
+}
+.underGr {
+    border-bottom-color: #dbd6d6;
+}
+    /*белый */
+    .whiteCol {
+    color: white !important;
+}
+.white {
+    background: white !important;
+}
+/*предупреждения при входе */
+.info {
+     background: #909090;
+    color: black;
+    height: 40px;
+}
+
+.prLeft {
+    text-align: left;
+    margin-left: -25px;
+}
+
+.row {
+    width: 100%;
+}
+
+.blueTitul {
+    color: black !important;
+    text-align: center;
+    font-size: 0.9em;
+}
+.padTop-5 {
+    padding-top: 7px;
+    margin-left: -20px !important;
+}
+/*фон панелей*/
+.Ftab, .Ftab4, .Ftab3 {
+    margin: 0 -12px !important;
+    padding: 3px 10px;
+    padding-bottom: 10px;
+    max-height: calc(85vh - 100px);
+    overflow: auto;
+    font-size: 1em !important;
+}
+/*фон 3 панели*/
+.Ftab3 {
+    max-height: calc(85vh - 65px);
+}
+/*фон 4 панели*/
+.Ftab4 {
+    max-height: calc(85vh - 160px);
+}
+/*вид черточек при сортировке разделов и банеров*/
+.sortable-handler {
+    color: black !important;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2018%2012'%20fill%3D'%23000000'%3E%3Cpath%20d%3D'M0%2C2V0h22v2H0z'%2F%3E%3Cpath%20d%3D'M0%2C7V5h22v2H0z'%2F%3E%3Cpath%20d%3D'M0%2C12v-2h22v2H0z'%2F%3E%3C%2Fsvg%3E")   !important;
+}
+.aft {
+    font-size: 0.9em !important;
+}
+
+.FtabAdr {
+    margin: 0 !important;
+    padding: 0 !important;
+    margin-bottom: 5px !important;
+height: 15px; 
+line-height: 15px;
+background: yellow;
+font-size: 0.9em !important;
+}
+.opacite {
+    background: rgba(0,0,220, 0);
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.st .item-inner::before {
+    display: none !important;
+}
+/*всплывающиее меню фирмы*/
+.popFirma, .popDiv, .delSubFirma, .addSubFirma  {
+    height: 0;
+    width: 100px;
+    margin-left: 5px !important;
+    }
+.delSubFirma, .addSubFirma {
+    width: 210px;
+    margin-left: 5px !important;
+    text-align: right;
+}
+.baner-popup {
+    height: 90% !important;
+    top: 350px !important;
+}
+.delSubFirma {
+    width: 190px;
+}
+/*кнопки в всплывающем меню фирмы подразделов в редактировании фирм*/
+.butSubFirma {
+    border-radius: 20px !important;
+    background: #2196F3;
+    margin: 0;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    margin-left: 5px !important;
+}
+    .popDiv {
+    width: 170px;
+}
+/*обрамление кнопок меню фирмы*/
+.closeFirma {
+    width: 100px;
+    }
+/*обрамление кнопок меню разделов*/
+.closeDiv {
+    width: 170px;
+    bottom: 7px;
+    right: 33px;
+}
+/*кнопки в всплывающем меню фирмы*/
+.butFirma {
+    border-radius: 40px !important;
+    background: #2196F3;
+    margin: 0 ;
+    width: 33px ;
+    height: 33px ;
+    padding: 0;
+}
+/*границы на тулбаре*/
+.Uptab {
+    border-right: 1px solid white;
+    border-left: 1px solid white;
+    padding: 5px;
+    font-weight: 800;
+}
+
+/*Навбар наверху*/
+.navGrey {
+    background: #D9DADA !important;
+    height: 50px !important;
+}
+
+/*окно редактирования и добавления фирмы*/
+.firma-popup {
+    top: 350px !important;
+    }
+
+/*Надпись к чекбоксу*/
+.leftCheck {
+    text-align: left;
+    margin-left: -210px;
+}
+/*оконтовка кнопок*/
+.okant {
+    border: 1px solid black !important;
+    color: black !important;
+}
+
+
+/*Кнопки в форме созадния фирм, подразделов*/
+.butForm {
+    height: 20px !important;
+    line-height: 20px !important;
+    padding: 5px !important;
+    margin: 0 !important;
+    border: 1px solid black;
+    background: white !important;
+    color: black !important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+    .butForm:hover {
+        height: 25px !important;
+        line-height: 25px !important;
+        background: #cccaca !important;
+    }
+
+/*Плэйсхолдеры для инпута и селект*/
+input[type="text"], input[type="text"]::placeholder, select,
+input[type="password"],
+input[type="email"],
+input[type="tel"],
+input[type="url"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="time"],
+input[type="number"] {
+    font-size: 0.8em !important;
+    font-weight: normal !important;
+    height: 20px !important;
+    max-height: 20px !important;
+    padding: 0 0px !important;
+    margin: 0 0px !important;
+    width: 100% !important;
+}
+.item-input-wrap {
+    min-height: 20px !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    }
+textarea {
+    height: 350px !important;
+    min-height: 350px !important;
+}
+    /*Плэйсхолдеры для поиска*/
+    input[type="search"]::placeholder, input[type="search"] {
+        font-size: 1em !important;
+        font-weight: 500 !important;
+    }
+/*вид разделов в редактировании и добавление фирмы*/
+.firmItemRow {
+    padding: 0;
+    margin: 0;
+    background: grey;
+    height: 0;
+}
+/*поле под ввод названия, и другое в редактировании*/
+.firmItemName {
+    height: auto !important;
+    padding: 2px 5px !important;
+    margin: 0 !important;
+}
+
+
+.marBot {
+    margin-bottom: 20px !important;
+}
+
+.firmItem, .firmItemName, .firmItemName2 {
+    margin-bottom: 3px !important;
+    background: #EBEBEB;
+    padding: 5px;
+    border: solid 0.5px black;
+    line-height: 15px !important;
+}
+.firmItemName2 {
+    height: 70px !important;
+    width: 98.5% !important;
+}
+
+.mar-10 {
+    margin-left: -10px;
+    margin-top: -5px;
+}
+.black {
+    color: black !important;
+}
+/*Кнопки на главной форме*/
+.butMain {
+    height: 30px !important;
+    line-height: 20px !important;
+    padding: 5px !important;
+    border: 1px solid black;
+    background: white !important;
+    color: black !important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    width: 100% !important;
+    font-size: 0.8vw !important;
+    }
+   .butMain:hover {
+        background: #dbd6d6 !important;
+    }
+
+/*Отображение даты фирмы*/
+.dateFirma {
+    color: black !important;
+    background: white !important;
+    padding: 2px 5px !important;
+    padding-right: 0 !important;
+}
+.dateF {
+    color: black;
+   text-align: right;
+  font-size: 0.9em;
+    }
+
+
+/*вид табов в редактировании фирмы*/
+.tabFirm {
+    height: 20px !important;
+}
+/*подстраница для отображение табов в редактировании фирмы*/
+.pageFirm {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.tab-link-active {
+    background: #0a7cd7 !important;
+}
+.tab-link {
+    background: #908c8c;
+    border-left: solid 1px white;
+    border-right: solid 1px white;
+}
+/*вид полосок разделов, подразделов на главной*/
+.lineAll, lineFill, .lineSub {
+    margin: 0 !important;
+    margin-bottom: 5px !important;
+    padding: 0 !important;
+    font-size: 0.9em;
+}
+
+
+.lineAll {
+    color: black;
+    background: #EBEBEB;
+ }
+/*вид полосок подразделов на главной*/
+.lineSub {
+    font-size: 0.85em;
+    height: 28px !important;
+}
+.lineAllGr {
+    color: black;
+    background: #cccaca;
+}
+    /*вид выделенной полоски разделов, подразделов*/
+.lineFill {
+    background: white;
+    color: #F29015;
+    font-weight: 700;
+}
+    .lineFill:hover {
+        color: #F29015 !important;
+    }
+/*Раздел адреса в редактировании фирм*/
+.adress {
+    padding: 10px;
+    border: 1px solid black;
+    background: #dbd6d6;
+}
+
+/*колонка с разделами, подразделами и фирмами в редактировании фирмы*/
+.upTitulFirm {
+    margin: 0 !important;
+    border: 1px solid #000000;
+    padding: 0 5px !important;
+    overflow: auto;
+}
+
+
+.upTitulSub {
+    margin: 0 !important;
+    background: white;
+    padding: 0 5px !important;
+    padding-left: 25px !important;
+}
+    /*Редактирование или добавление фирмы*/
+.firmaEdit {
+margin-top: -25px !important;
+}
+
+.firma-popup {
+    width: 85% !important;
+    min-width: 85% !important;
+    height: 95% !important;
+    min-height: 95% !important;
+    left: 30% !important;
+    padding: 0 !important;
+    }
+    /*фон панелей  в фирме*/
+.FtabFirm{
+    padding: 0 2px !important;
+    margin: 0 !important;
+    max-height: 42vh;
+    overflow: auto;
+    font-size: 0.7em !important;
+    width: 100% !important;
+}
+/*Галочка для принта фирмы*/
+.tiBef{
+    position: absolute;
+    left: 0;
+    top: 1px;
+    margin-left: -30px;
+}
+.size-08 {
+    font-size: 0.8em !important;
+}
+    /*вид полосок разделов, подразделов в редактировании фирмы*/
+    .lineAllFirm, .lineFillFirm, .lineAllDiv, .lineAllSub {
+    margin: 2px 0 !important;
+    padding: 0 !important;
+    font-size: 0.8em;
+    margin-left: -57px !important;
+}
+.min56 {
+    margin-left: -57px !important;
+}
+.upTitulSub {
+    margin-left: 2px !important;
+}
+    .list .lineAllFirm .item-inner, .list .lineFillFirm .item-inner, .list .lineAllDiv .item-inner, .list .lineAllDiv .item-inner, .list .lineAllSub .item-inner, .list .lineAllSub .item-inner, .list .lineAllFirm .item-content, .list .lineFillFirm .item-content {
+    min-height: 20px !important;
+    height: 20px !important;
+} .list .item-inner:after {
+    display: none !important;
+} .list .item-content:after {
+    display: none !important;
+} .list .item-content {
+    padding: 2px 5px !important;
+    min-height: 30px !important;
+    } .list .item-inner {
+    padding: 2px 5px !important;
+    padding: 0px !important;
+    min-height: 30px !important;
+} .lineAllFirm {
+    color: black;
+    background: #dbd6d6;
+    } .lineAllFirmBlue {
+    color: #0a7cd7;
+}
+    /*вид выделенной полоски разделов, подразделов*/
+    .lineFillFirm, .lineAllDiv {
+    background: #858484;
+    color: white;
+}
+    /*Для тех кто помечен как noDisplay*/
+    .noDisplay {
+    text-decoration: line-through;
+}
+    /*колонка с разделами, подразделами и фирмами*/
+.upTitul {
+    margin: 0 5px;
+    margin-top: -35px;
+    border: 1px solid #000000;
+    padding: 0 10px !important;
+    background: rgba(150, 150, 150, 0.8) !important;
+    }
+
+
+    /*Добавление чего-либо*/
+    .addRaz {
+    padding: 10px;
+    margin: 0px;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    font-weight: 700;
+    background: #e6ebc0;
+    width: 100%;
+} .addRaz2 {
+    background: white;
+    padding: 1px 5px;
+    color: black !important;
+} .addRaz3 {
+    margin-right: 0;
+    background: #dbd6d6;
+    padding: 10px;
+    color: white !important;
+}
+    /*Фон для показа подробностей фирмы*/
+    .firmaFon {
+    margin: 8px;
+    background: white;
+}
+    /*Скрытие элемента*/
+    .hidden {
+    display: none;
+} .after {
+    color: #20649d;
+    font-weight: 400;
+} 
+  .subtitle {
+    color: black;
+    font-weight: 500;
+}
+.title {
+    font-size: 1vw !important;
+    color: white;
+}
+.firmItemName .title {
+    font-size: 1vw !important;
+    color: black;
+}
+.icon-back {
+    color: white !important;
+}
+.popover {
+    height: auto !important;
+    max-height: 80% !important;
+    padding: 10px !important;
+}
+/*fab общий фон*/
+.fab > a, .fab-buttons > a {
+    background: #444343 !important;
+}
+/*fab для полосок разделов, подразделов и т.д.*/
+.myFab, .myFabSub {
+    padding: 0 !important;
+    transform: translateY(-28px) scale(0.6) !important;
+    margin-right: -20px;
+}
+.myFabSub {
+    transform: translateY(-31px) scale(0.5) !important;
+    }
+
+    /*fab отодвигаем, когда надо передвигать полоски*/
+    .myFab2 {
+    margin-right: 20px;
+}
+.myFab3 {
+    margin-right: 40px;
+}
+    /*Отделяет наименование от тугла*/
+    .span-form {
+    margin-right: 190px !important;
+} .red {
+    color:red !important;
+} .grey {
+    color: #908c8c;
+ } .padBot10{
+    margin-bottom: 20px !important;
+} .redback {
+    background: red;
+    color: white !important;
+} .blackback {
+    background: black;
+    color: white !important;
+} .black {
+    color: black;
+}
+.marg5 {
+    margin-bottom: 5px;
+}
+.fontSmall {
+    font-size: 0.4em !important;
+    color: red;
+}
+/*Две черные черты, сверху и снизу с маргином*/
+.lin {
+    border-bottom: 1px solid black;
+    border-top: 1px solid black;
+    margin: 5px 0 !important;
+    padding: 5px 0 !important;
+}
+/*Приоритеты у фирм, чтобы выделить*/
+.first-span {
+    width: 30px !important;
+} 
+.minPadLeft {
+    margin-left: -60px !important;
+    margin-right: -4px !important;
+} 
+.textareaFirm {
+    background: #dbd6d6;
+    width: 98% !important;
+    height: 400px !important;
+    margin-bottom: 5px;
+}
+
+    /*селект*/
+    .lightYellow {
+    background: white;
+    padding-left: 5px;
+    } 
+    select {
+    font-weight: 700 !important;
+}
+    /*Кнопка меню справа*/
+    .butMenu {
+    margin:  -1px 20px !important;
+    padding: 0 !important;
+    }
+/*Меню в правой панели*/
+.blackOpen {
+    background: black !important;
+    color: white !important;
+}

@@ -1,0 +1,4 @@
+PassengerNodejs /home/a/autogie1/.local/node-v8.1.2-linux-x64/bin/node
+PassengerAppRoot /home/a/autogie1/autogie1.bget.ru/public_html
+PassengerAppType node
+PassengerStartupFile app.js

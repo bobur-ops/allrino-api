@@ -2,6 +2,7 @@
     "name": "fuse-react-app",
     "version": "8.3.8",
     "private": true,
+    "main": "app.js",
     "dependencies": {
         "@canvasjs/charts": "^3.7.32",
         "@canvasjs/react-charts": "^1.0.0",
@@ -166,13 +167,7 @@
         "util": "^0.12.5"
     },
     "scripts": {
-         "start": "node app.js",
-        "build": "cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
-        "test": "react-app-rewired test --env=node",
-        "eject": "react-app-rewired eject",
-        "build-docs": "babel-node --presets @babel/preset-env src/app/main/documentation/material-ui-components/build.js",
-        "analyze": "react-app-rewired build && source-map-explorer 'build/static/js/*.js' --html analyze-result.html",
-        "lint": "eslint"
+        "start": "node app.js"
     },
     "engines": {
         "node": ">=18.0.0",
